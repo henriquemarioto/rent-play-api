@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "users",
+    "games",
+    "rent_accounts",
+    "rents_history",
 ]
 
 MIDDLEWARE = [
