@@ -17,14 +17,15 @@ class UserSerializer(serializers.ModelSerializer):
             "wallet",
             "password"
         ]
+
         extra_kwargs = {
             "password": {"write_only": True},
             "is_active": {"read_only": True},
-            "wallet": {"default": 0, "read_only": True}
+            "wallet": {"read_only": True}
         }
 
     def create(self, validated_data: dict):
-        return User.objects.create_user(**validated_data)
+        return User.objects.create_user(**validated_data, wallet=0)
 
     def update(self, instance: User, validated_data: dict):
         for key, value in validated_data.items():
