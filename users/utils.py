@@ -5,11 +5,13 @@ from django.utils import timezone
 class CustomUserManager(BaseUserManager):
     def _create_user(
         self,
-        email,
-        first_name,
         nickname,
+        first_name,
         last_name,
+        cellphone,
+        email,
         password,
+        wallet,
         is_superuser,
         **extra_fields
     ):
@@ -21,10 +23,12 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
 
         user = self.model(
-            email=email,
             nickname=nickname,
             first_name=first_name,
             last_name=last_name,
+            cellphone=cellphone,
+            email=email,
+            wallet=wallet,
             is_active=True,
             is_superuser=is_superuser,
             last_login=now,
@@ -39,21 +43,47 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_user(
-        self, email, nickname, first_name, last_name, password, **extra_fields
+        self,
+        email,
+        nickname,
+        cellphone,
+        first_name,
+        last_name,
+        password,
+        wallet,
+        **extra_fields
     ):
         return self._create_user(
-            email, nickname, first_name, last_name, password, False, **extra_fields
-        )
-
-    def create_superuser(
-        self, email, nickname, first_name, last_name, password, **extra_fields
-    ):
-        return self._create_user(
-            email,
             nickname,
             first_name,
             last_name,
+            cellphone,
+            email,
             password,
+            wallet,
+            False,
+            **extra_fields
+        )
+
+    def create_superuser(
+        self,
+        email,
+        nickname,
+        cellphone,
+        first_name,
+        last_name,
+        password,
+        wallet,
+        **extra_fields
+    ):
+        return self._create_user(
+            nickname,
+            first_name,
+            last_name,
+            cellphone,
+            email,
+            password,
+            wallet,
             False,
             True,
             **extra_fields
