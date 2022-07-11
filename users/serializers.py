@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            "id",
             "nickname",
             "first_name",
             "last_name",
@@ -19,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "password": {"write_only": True},
             "is_active": {"read_only": True},
-            "wallet": {"default": 0}
+            "wallet": {"default": 0, "read_only": True}
         }
 
     def create(self, validated_data: dict):
@@ -40,3 +41,17 @@ class UserSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
+
+class IsActiveUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "nickname",
+            "first_name",
+            "last_name",
+            "cellphone",
+            "email",
+            "password"
+        ]

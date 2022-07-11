@@ -4,10 +4,14 @@ from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
 
 from users.mixins import SerializerByMethodMixin
-from users.permissions import CreateUserPermissions, SuperUserPermissions, UserPermissions
+from users.permissions import (
+    CreateUserPermissions,
+    SuperUserPermissions,
+    UserPermissions,
+)
 from .models import User
 from rest_framework.authtoken.models import Token
-from .serializers import UserLoginSerializer, UserSerializer
+from .serializers import IsActiveUserSerializer, UserLoginSerializer, UserSerializer
 
 
 class UserView(SerializerByMethodMixin, generics.ListCreateAPIView):
@@ -49,9 +53,17 @@ class ListUsersFilterView(generics.ListAPIView):
         return self.queryset.order_by("-date_joined")[0:max_users]
 
 
-class UpdateUserView(SerializerByMethodMixin, generics.UpdateAPIView):
+class UpdateUserView(SerializerByMethodMixin, generics.RetrieveUpdateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [UserPermissions]
 
     queryset = User.objects.all()
-    serializer_map = {"PATCH": UserSerializer}
+    serializer_map = {"PATCH": UserSerializer, "GET": UserSerializer}
+
+
+class UpdateIsActiveUserView(SerializerByMethodMixin, generics.UpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [SuperUserPermissions]
+
+    queryset = User.objects.all()
+    serializer_map = {"PATCH": IsActiveUserSerializer}
