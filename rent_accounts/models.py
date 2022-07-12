@@ -1,16 +1,16 @@
 from tkinter import CASCADE
 from django.db import models
+import uuid
 
-class Movie(models.Model):
-    service = models.CharField(max_length=16)
+
+class RentAccounts(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    plataform = models.CharField(max_length=16)
     login = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)   
-    end_date = models.DateField()
-    price = models.DecimalField()    
-    
-    users = models.OneToOneField("users.User",on_delete=CASCADE, related_name="users")
+    password = models.CharField(max_length=255)
+    price_per_day = models.DecimalField(max_digits=6, decimal_places=2)
 
-
-    def __repr__(self):
-        return f"Movie {self.title} - {self.duration} - {self.premiere} - {self.classification} - {self.synopsis} - {self.genres}"
-
+    renter = models.OneToOneField(
+        "users.User", on_delete=CASCADE, related_name="renter"
+    )
+    owner = models.OneToOneField("users.User", on_delete=CASCADE, related_name="owner")
