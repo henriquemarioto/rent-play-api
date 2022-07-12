@@ -6,5 +6,6 @@ class Game(models.Model):
     image: models.StringField()
     release_date: models.DateField()
 
-
-rent_accounts = models.ManyToManyField("rent_accounts", related_name="rent_accounts")
+    rent_accounts = models.ManyToManyField(
+        "rent_accounts", related_name="rent_accounts", on_delete=models.CASCADE
+    )
