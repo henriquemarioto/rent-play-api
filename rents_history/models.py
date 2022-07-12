@@ -8,10 +8,6 @@ class RentHistory(models.Model):
     reseted = models.BooleanField(default=False)
 
     rent_accounts = models.ManyToManyField(
-        "rent_accounts.RentAccount",
-        related_name="rent_accounts",
-        on_delete=models.DO_NOTHING,
+        "rent_accounts.RentAccount", related_name="rent_accounts"
     )
-    user = models.ManyToManyField(
-        "users.User", related_name="user", on_delete=models.DO_NOTHING
-    )
+    user = models.ManyToManyField("users.User", related_name="user")
