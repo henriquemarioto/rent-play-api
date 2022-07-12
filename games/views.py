@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import generics
+from .serializers import GameSerializer
+from .models import Game
+from .mixins import SerializerByMethodMixin
 
-# Create your views here.
+
+class GameViews(SerializerByMethodMixin, generics.ListCreateAPIView):
+    queryset = Game.objects.all()
+    serializer_map = {"POST": GameSerializer, "GET": GameSerializer}
