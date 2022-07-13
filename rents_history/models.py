@@ -10,5 +10,7 @@ class RentHistory(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     reseted = models.BooleanField(default=False)
 
-    rent_accounts = models.ManyToManyField("rent_accounts.RentAccount", related_name="rent_accounts")
+    rent_accounts = models.ManyToManyField(
+        "rent_accounts.RentAccount", related_name="rent_accounts"
+    )
     user = models.ManyToManyField("users.User", related_name="user")
