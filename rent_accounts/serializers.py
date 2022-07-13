@@ -1,10 +1,16 @@
 from games.models import Game
 from games.serializers import GameSerializer
+from platforms.models import Platform
 from rest_framework import serializers
 from users.models import User
 from users.serializers import UserSerializer
 
 from .models import RentAccount
+
+
+class PlatformChoices(serializers.ChoiceField):
+    platforms = Platform.objects.all()
+    platform_choices = [platform.name for platform in platforms]
 
 
 class OwnerSerializer(serializers.ModelSerializer):
@@ -21,14 +27,16 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
         model = RentAccount
         fields = [
             "id",
-            "plataform",
             "login",
             "password",
             "price_per_day",
             "owner",
             "games",
         ]
-        extra_kwargs = {"login": {"write_only": True}, "password": {"write_only": True}}
+        extra_kwargs = {
+            "login": {"write_only": True},
+            "password": {"write_only": True},
+        }
 
     def create(self, validated_data: dict):
         games = validated_data.pop("games")
@@ -54,5 +62,4 @@ class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
 class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentAccount
-        exclude = ["owner", "plataform", "renter", "games"]
-
+        exclude = ["owner", "platform", "renter", "games"]

@@ -1,5 +1,6 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class RentAccount(models.Model):
@@ -7,7 +8,7 @@ class RentAccount(models.Model):
     login = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     price_per_day = models.DecimalField(max_digits=6, decimal_places=2)
-    plataform = models.CharField(max_length=16)
+    platform = models.CharField(max_length=16)
 
     renter = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="renter", null=True

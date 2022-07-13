@@ -36,4 +36,3 @@ class RetrieveUpdateDestroyRentAccountView(
         "DELETE": UpdateDeleteRentAccountSerializer,
     }
 
-# Teste de commit
