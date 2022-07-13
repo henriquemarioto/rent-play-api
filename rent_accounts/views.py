@@ -1,7 +1,10 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response, status
+from games.models import Game
+from platforms.models import Platform
 from users.mixins import SerializerByMethodMixin
 
 from .models import RentAccount
@@ -23,7 +26,10 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
     }
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        platform = get_object_or_404(Platform, pk=self.request.data.get("platform"))
+        games = Game.objects.filter(id__in=tuple(self.request.data.get("games")))
+        print("AQUIIIIIIIIIIIIIIIIII", games)
+        serializer.save(owner=self.request.user, platform=platform, games=games)
 
 
 class RetrieveUpdateDestroyRentAccountView(

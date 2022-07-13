@@ -1,6 +1,6 @@
 from games.models import Game
 from games.serializers import GameSerializer
-from platforms.models import Platform
+from platforms.serializers import PlatformSerializer
 from rest_framework import serializers
 from users.models import User
 from users.serializers import UserSerializer
@@ -8,20 +8,21 @@ from users.serializers import UserSerializer
 from .models import RentAccount
 
 
-class PlatformChoices(serializers.ChoiceField):
-    platforms = Platform.objects.all()
-    platform_choices = [platform.name for platform in platforms]
-
-
 class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id"]
 
+class GamesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ["id"]
+
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
-    games = GameSerializer(many=True)
+    games = GamesSerializer(many=True)
     owner = OwnerSerializer(read_only=True)
+    platform = PlatformSerializer(read_only=True)
 
     class Meta:
         model = RentAccount
@@ -32,6 +33,7 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
             "price_per_day",
             "owner",
             "games",
+            "platform",
         ]
         extra_kwargs = {
             "login": {"write_only": True},
