@@ -11,14 +11,10 @@ class CustomUserManager(BaseUserManager):
         cellphone,
         email,
         password,
-        wallet,
         is_superuser,
         **extra_fields
     ):
         now = timezone.now()
-
-        if not email:
-            raise ValueError("The given email must be set")
 
         email = self.normalize_email(email)
 
@@ -28,7 +24,7 @@ class CustomUserManager(BaseUserManager):
             last_name=last_name,
             cellphone=cellphone,
             email=email,
-            wallet=wallet,
+            wallet=0,
             is_active=True,
             is_superuser=is_superuser,
             last_login=now,
@@ -50,7 +46,6 @@ class CustomUserManager(BaseUserManager):
         first_name,
         last_name,
         password,
-        wallet,
         **extra_fields
     ):
         return self._create_user(
@@ -60,7 +55,6 @@ class CustomUserManager(BaseUserManager):
             cellphone,
             email,
             password,
-            wallet,
             False,
             **extra_fields
         )
@@ -73,7 +67,6 @@ class CustomUserManager(BaseUserManager):
         first_name,
         last_name,
         password,
-        wallet,
         **extra_fields
     ):
         return self._create_user(
@@ -83,8 +76,6 @@ class CustomUserManager(BaseUserManager):
             cellphone,
             email,
             password,
-            wallet,
-            False,
             True,
             **extra_fields
         )
