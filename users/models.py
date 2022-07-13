@@ -1,10 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import uuid
 
 from .utils import CustomUserManager
 
+
 # Create your models here.
 class User(AbstractUser):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     username = None
     nickname = models.CharField(unique=True, max_length=16)
     first_name = models.CharField(max_length=255)
