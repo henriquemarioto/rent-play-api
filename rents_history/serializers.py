@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from rent_accounts.serializers import RentAccountCreateSerializer
+from rent_accounts.serializers import CreateRentAccountSerializer
 from users.serializers import UserSerializer
 
 from .models import RentHistory
 
 
 class RentHistorySerializer(serializers.ModelSerializer):
-    rent_accounts = RentAccountCreateSerializer(many=True, read_only=True)
+    rent_accounts = CreateRentAccountSerializer(many=True, read_only=True)
     user = UserSerializer(many=True, read_only=True)
 
     class Meta:
