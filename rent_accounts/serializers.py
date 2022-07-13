@@ -6,6 +6,7 @@ from users.serializers import UserSerializer
 
 from .models import RentAccount
 
+
 class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -29,11 +30,11 @@ class RentAccountCreateSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {"login": {"write_only": True}, "password": {"write_only": True}}
 
-
     def create(self, validated_data: dict):
         games = validated_data.pop("games")
 
         rent_account = RentAccount.objects.create(**validated_data)
+
         for game in games:
             jogo, _ = Game.objects.get_or_create(**game)
             rent_account.games.add(jogo)

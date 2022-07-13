@@ -14,5 +14,12 @@ class User(AbstractUser):
     wallet = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["nickname", "first_name", "last_name"]
+
+    REQUIRED_FIELDS = [
+        "nickname",
+        "first_name",
+        "last_name",
+        "cellphone",
+    ]
+
     objects = CustomUserManager()

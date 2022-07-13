@@ -1,8 +1,10 @@
+import datetime, uuid
 from django.db import models
 
 
 class RentHistory(models.Model):
-    start_date = models.DateField()
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    start_date = models.DateField(default=datetime.date.today)
     end_date = models.DateField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     reseted = models.BooleanField(default=False)
