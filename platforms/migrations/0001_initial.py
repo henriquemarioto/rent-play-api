@@ -13,12 +13,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name='Platform',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=64)),
-                ('image', models.URLField(max_length=255)),
-                ('release_date', models.DateField()),
+                ('name', models.CharField(max_length=16)),
+                ('image_url', models.URLField(max_length=255)),
             ],
         ),
     ]
