@@ -8,6 +8,8 @@ from .models import RentHistory
 from rent_accounts.models import RentAccount
 from .serializers import RentHistorySerializer
 
+from rent_play.permissions import OwnerAndAdminPermissions
+
 from rents_history.mixins import SerializerByMethodMixin
 
 
@@ -16,7 +18,7 @@ from rents_history.mixins import SerializerByMethodMixin
 
 class ListRentHistoryView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
 
     queryset = RentHistory.objects.all()
     serializer_class = RentHistorySerializer
@@ -39,7 +41,7 @@ class CreateRentHistoryView(SerializerByMethodMixin, generics.CreateAPIView):
 
 class RetrieveRentHistoryDetailView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
 
     queryset = RentHistory.objects.all()
     serializer_class = RentHistorySerializer
