@@ -7,3 +7,4 @@ class PlatformSerializer(serializers.ModelSerializer):
     class Meta:
         model = Platform
         fields = "__all__"
+
