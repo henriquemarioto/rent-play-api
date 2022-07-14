@@ -1,7 +1,8 @@
 from rest_framework import generics
-from .serializers import GameSerializer
-from .models import Game
+
 from .mixins import SerializerByMethodMixin
+from .models import Game
+from .serializers import GameSerializer
 
 
 class GameViews(SerializerByMethodMixin, generics.ListCreateAPIView):

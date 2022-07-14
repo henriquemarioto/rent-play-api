@@ -1,16 +1,16 @@
 from django.shortcuts import get_object_or_404
+from platforms.models import Platform
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import Response, status
-from games.models import Game
-from platforms.models import Platform
 from users.mixins import SerializerByMethodMixin
 
 from .models import RentAccount
 from .serializers import (
+    AddGamesRentAccountByIdSerializer,
     CreateRentAccountSerializer,
     ListAndRetriveRentAccountSerializer,
+    RemoveGamesRentAccountByIdSerializer,
     UpdateDeleteRentAccountSerializer,
 )
 
@@ -27,9 +27,7 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
 
     def perform_create(self, serializer):
         platform = get_object_or_404(Platform, pk=self.request.data.get("platform"))
-        games = Game.objects.filter(id__in=tuple(self.request.data.get("games")))
-        print("AQUIIIIIIIIIIIIIIIIII", games)
-        serializer.save(owner=self.request.user, platform=platform, games=games)
+        serializer.save(owner=self.request.user, platform=platform)
 
 
 class RetrieveUpdateDestroyRentAccountView(
@@ -41,4 +39,13 @@ class RetrieveUpdateDestroyRentAccountView(
         "PATCH": UpdateDeleteRentAccountSerializer,
         "DELETE": UpdateDeleteRentAccountSerializer,
     }
+
+
+class AddGamesRentAccountByIdView(generics.UpdateAPIView):
+    queryset = RentAccount.objects.all()
+    serializer_class = AddGamesRentAccountByIdSerializer
+
+class RemoveGamesRentAccountByIdView(generics.UpdateAPIView):
+    queryset = RentAccount.objects.all()
+    serializer_class = RemoveGamesRentAccountByIdSerializer
 
