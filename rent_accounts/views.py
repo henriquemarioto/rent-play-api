@@ -26,8 +26,7 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
     }
 
     def perform_create(self, serializer):
-        platform = get_object_or_404(Platform, pk=self.request.data.get("platform"))
-        serializer.save(owner=self.request.user, platform=platform)
+        serializer.save(owner=self.request.user)
 
 
 class RetrieveUpdateDestroyRentAccountView(
