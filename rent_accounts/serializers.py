@@ -1,5 +1,5 @@
 from games.models import Game
-from games.serializers import GameSerializer
+from platforms.serializers import PlatformSerializer
 from rest_framework import serializers
 from users.models import User
 from users.serializers import UserSerializer
@@ -13,33 +13,36 @@ class OwnerSerializer(serializers.ModelSerializer):
         fields = ["id"]
 
 
+class GamesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ["id"]
+
+
 class CreateRentAccountSerializer(serializers.ModelSerializer):
-    games = GameSerializer(many=True)
+    games = GamesSerializer(read_only=True, many=True)
+    game_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Game.objects.all(), many=True, source="games", write_only=True
+    )
     owner = OwnerSerializer(read_only=True)
+    platform = PlatformSerializer(read_only=True)
 
     class Meta:
         model = RentAccount
         fields = [
             "id",
-            "plataform",
             "login",
             "password",
             "price_per_day",
             "owner",
             "games",
+            "game_ids",
+            "platform",
         ]
-        extra_kwargs = {"login": {"write_only": True}, "password": {"write_only": True}}
-
-    def create(self, validated_data: dict):
-        games = validated_data.pop("games")
-
-        rent_account = RentAccount.objects.create(**validated_data)
-
-        for game in games:
-            jogo, _ = Game.objects.get_or_create(**game)
-            rent_account.games.add(jogo)
-
-        return rent_account
+        extra_kwargs = {
+            "login": {"write_only": True},
+            "password": {"write_only": True},
+        }
 
 
 class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
@@ -54,5 +57,34 @@ class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
 class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentAccount
-        exclude = ["owner", "plataform", "renter", "games"]
+        exclude = ["owner", "platform", "renter", "games"]
 
+
+class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
+    games = GamesSerializer(read_only=True, many=True)
+    game_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Game.objects.all(), many=True, source="games", write_only=True
+    )
+
+    class Meta:
+        model = RentAccount
+        fields = ["game_ids", "games"]
+
+    def update(self, instance, validated_data):
+        instance.games.add(*validated_data["games"])
+        return validated_data
+
+
+class RemoveGamesRentAccountByIdSerializer(serializers.ModelSerializer):
+    games = GamesSerializer(read_only=True, many=True)
+    game_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Game.objects.all(), many=True, source="games", write_only=True
+    )
+
+    class Meta:
+        model = RentAccount
+        fields = ["game_ids", "games"]
+
+    def update(self, instance, validated_data):
+        instance.games.remove(*validated_data["games"])
+        return {""}

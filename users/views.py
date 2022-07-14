@@ -35,8 +35,9 @@ class UserLoginView(generics.CreateAPIView):
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
+            serializer = UserSerializer(user)
 
-            return Response({"token": token.key})
+            return Response({"token": token.key, "user": serializer.data})
 
         return Response(
             {"detail": "invalid username or password"},

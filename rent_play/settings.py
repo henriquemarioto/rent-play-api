@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
 import os
-import dotenv
+from pathlib import Path
+
 import dj_database_url
+import dotenv
 
 dotenv.load_dotenv()
 
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     "games",
     "rent_accounts",
     "rents_history",
+    "platforms",
 ]
 
 MIDDLEWARE = [
@@ -60,8 +62,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ORIGIN_ALLOW_ALL=True
-CORS_ALLOW_ALL_ORIGINS=True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ORIGIN_WHITELIST = [
 #     'https://localhost:3000',
 #     'http://localhost:3000',
@@ -164,3 +166,8 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,
+}
