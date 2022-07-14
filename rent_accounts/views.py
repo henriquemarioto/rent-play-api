@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.mixins import SerializerByMethodMixin
-
+from rent_play.permissions import OwnerAndAdminPermissions, RenterAndOwnerPermissions
 from .models import RentAccount
 from .serializers import (
     AddGamesRentAccountByIdSerializer,
@@ -32,6 +32,9 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
 class RetrieveUpdateDestroyRentAccountView(
     SerializerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
 ):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
+
     queryset = RentAccount.objects.all()
     serializer_map = {
         "GET": ListAndRetriveRentAccountSerializer,
@@ -41,10 +44,14 @@ class RetrieveUpdateDestroyRentAccountView(
 
 
 class AddGamesRentAccountByIdView(generics.UpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
     queryset = RentAccount.objects.all()
     serializer_class = AddGamesRentAccountByIdSerializer
 
 class RemoveGamesRentAccountByIdView(generics.UpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
     queryset = RentAccount.objects.all()
     serializer_class = RemoveGamesRentAccountByIdSerializer
 
