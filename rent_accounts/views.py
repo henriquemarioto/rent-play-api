@@ -54,7 +54,7 @@ class ListRentAccountOwnerView(generics.ListAPIView):
         return RentAccount.objects.filter(owner=user)
 
 
-class ListRentAccountRenterView(generics.ListAPIView):
+class ListRentAccountUserbyRenterView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
