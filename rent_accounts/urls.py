@@ -5,7 +5,6 @@ from .views import (
     RetrieveUpdateDestroyRentAccountView,
     AddGamesRentAccountByIdView,
     RemoveGamesRentAccountByIdView,
-    UpdateRentRentAccountByIdView,
     ListRentAccountOwnerView,
     ListRentAccountUserbyIdView,
     ListRentAccountUserbyRenterView,
