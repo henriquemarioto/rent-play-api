@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 
 from users.models import User
 
@@ -21,13 +20,15 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "password": {"write_only": True},
             "is_active": {"read_only": True},
-            "wallet": {"read_only": True},
         }
 
     def create(self, validated_data: dict):
         return User.objects.create_user(**validated_data)
 
     def update(self, instance: User, validated_data: dict):
+        if "wallet" in validated_data:
+            validated_data["wallet"] += instance.wallet
+
         for key, value in validated_data.items():
             if key == "password":
                 instance.set_password(value)
