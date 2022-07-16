@@ -48,7 +48,7 @@ https://rent-play.herokuapp.com/
 
 ## 2. Diagrama ER
 
-[ Voltar para o topo ](#tabela-de-conteúdos)
+[ Voltar ao topo ](#tabela-de-conteúdos)
 
 Diagrama ER da API definindo bem as relações entre as tabelas do banco de dados.
 
@@ -56,7 +56,7 @@ Diagrama ER da API definindo bem as relações entre as tabelas do banco de dado
 
 ## 3. Configuração inicial
 
-[ Voltar para o topo ](#tabela-de-conteúdos)
+[ Voltar ao topo ](#tabela-de-conteúdos)
 
 ### 3.1 Instalando Dependências
 
@@ -98,7 +98,9 @@ $ python manage.py runserver
 
 ## 4. Autenticação
 
-IMPLEMENTAR MZR
+[ Voltar ao topo ](#tabela-de-conteúdos)
+
+Autenticação deve ser feita pelo usuário ao inserir os dados exigidos do arquivo .env.example.
 
 ## 5. Endpoints
 
