@@ -104,9 +104,13 @@ Autenticação deve ser feita pelo usuário ao inserir os dados exigidos do arqu
 
 ## 5. Endpoints
 
+[ Voltar ao topo ](#tabela-de-conteúdos)
+
 ### Índice
 
--[Users]
+-   [Users](#1-users)
+-   [POST api/users/](#11-criação-de-usuário)
+-   [POST api/login/](#12-login-de-usuário)
 
 ## 1. Users
 
