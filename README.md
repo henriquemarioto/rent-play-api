@@ -113,7 +113,7 @@ Autenticação deve ser feita pelo usuário ao inserir os dados exigidos do arqu
     -   [POST api/login/](#12-login-de-usuário)
     -   [GET api/users/](#13-listagem-de-usuários)
     -   [GET api/users/<user_id>/](#14-listando-usuário-por-id)
-    -   [GET api/users/newest/<quantity>/](#15-listando-usuários-mais-recentes-por-quantia)
+    -   [GET api/users/newest/<by_quantity>/](#15-listando-usuários-mais-recentes-por-quantia)
 
 ## 1. Users
 
@@ -134,13 +134,13 @@ O objeto user é definido como:
 
 ### Endpoints
 
-| Método | Rota                           | Descrição                                               |
-| ------ | ------------------------------ | ------------------------------------------------------- |
-| POST   | /api/users/                    | Rota para criação de usuário                            |
-| POST   | /api/login/                    | Rota para login de Usuário                              |
-| GET    | /api/users/                    | Lista todos usuários                                    |
-| GET    | /api/users/<user_id>/          | Lista um usuário especifico por id                      |
-| GET    | /api/users/newest/<quantity.>/ | Lista os usuários cadastardos mais recentes por quantia |
+| Método | Rota                             | Descrição                                               |
+| ------ | -------------------------------- | ------------------------------------------------------- |
+| POST   | /api/users/                      | Rota para criação de usuário                            |
+| POST   | /api/login/                      | Rota para login de Usuário                              |
+| GET    | /api/users/                      | Lista todos usuários                                    |
+| GET    | /api/users/<user_id>/            | Lista um usuário especifico por id                      |
+| GET    | /api/users/newest/<by_quantity>/ | Lista os usuários cadastardos mais recentes por quantia |
 
 ---
 
