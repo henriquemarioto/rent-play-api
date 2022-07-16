@@ -109,8 +109,11 @@ Autenticação deve ser feita pelo usuário ao inserir os dados exigidos do arqu
 ### Índice
 
 -   [Users](#1-users)
--   [POST api/users/](#11-criação-de-usuário)
--   [POST api/login/](#12-login-de-usuário)
+    -   [POST api/users/](#11-criação-de-usuário)
+    -   [POST api/login/](#12-login-de-usuário)
+    -   [GET api/users/](#13-listagem-de-usuários)
+    -   [GET api/users/<user_id>/](#14-listando-usuário-por-id)
+    -   [GET api/users/newest/<quantity>/](#15-listando-usuários-mais-recentes-por-quantia)
 
 ## 1. Users
 
