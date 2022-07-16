@@ -36,6 +36,40 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         serializer.save(owner=self.request.user)
 
 
+class ListRentAccountUserbyIdView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = ListAndRetriveRentAccountSerializer
+
+    def get_queryset(self):
+        user = get_object_or_404(User, pk=self.kwargs["pk"])
+        return RentAccount.objects.filter(owner=user.id)
+
+
+class ListRentAccountOwnerView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = ListAndRetriveRentAccountSerializer
+    
+    def get_queryset(self):
+        user = get_object_or_404(User, pk=self.request.user.id)
+        return RentAccount.objects.filter(owner=user)
+
+
+class ListRentAccountUserbyRenterView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = ListAndRetriveRentAccountSerializer
+    
+    def get_queryset(self):
+        user = get_object_or_404(User, pk=self.request.user.id)
+        return RentAccount.objects.filter(renter=user)
+
+
+
 class RetrieveUpdateDestroyRentAccountView(
     SerializerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
 ):
