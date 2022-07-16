@@ -2,42 +2,24 @@
 
 ## Tabela de Conteúdos
 
-- [Documentação da API](#documentação-da-api)
-  - [Tabela de Conteúdos](#tabela-de-conteúdos)
-  - [1. Visão Geral](#1-visão-geral)
-  - [2. Diagrama ER](#2-diagrama-er)
-  - [3. Configuração inicial](#3-configuração-inicial)
-    - [3.1 Instalando Dependências](#31-instalando-dependências)
-    - [3.2 Entrando na variavel de ambiente](#32-entrando-na-variavel-de-ambiente)
-    - [3.3 Subindo banco com docker](#33-subindo-banco-com-docker)
-    - [3.4 Executando as migrações](#34-executando-as-migrações)
-    - [3.5 Iniciando o servidor](#35-iniciando-o-servidor)
-  - [4. Autenticação](#4-autenticação)
-  - [5. Endpoints](#5-endpoints)
-    - [Índice](#índice)
+- [1. Visão Geral](#1-visão-geral)
+- [2. Diagrama ER](#2-diagrama-er)
+- [3. Configuração inicial](#3-configuração-inicial)
+  - [3.1 Instalando Dependências](#31-instalando-dependências)
+  - [3.2 Entrando na variavel de ambiente](#32-entrando-na-variavel-de-ambiente)
+  - [3.3 Subindo banco com docker](#33-subindo-banco-com-docker)
+  - [3.4 Executando as migrações](#34-executando-as-migrações)
+  - [3.5 Iniciando o servidor](#35-iniciando-o-servidor)
+- [4. Autenticação](#4-autenticação)
+- [5. Endpoints](#5-endpoints)
+  - [Índice](#índice)
   - [1. Users](#1-users)
-    - [Endpoints](#endpoints)
-    - [1.1 Criação de usuário](#11-criação-de-usuário)
-    - [`/api/users/`](#apiusers)
-    - [Exemplo de request](#exemplo-de-request)
-    - [Corpo da requisição](#corpo-da-requisição)
-    - [Exemplo de Response](#exemplo-de-response)
-    - [Possíveis erros:](#possíveis-erros)
-  - [1.2 Login de usuário](#12-login-de-usuário)
-    - [`/api/login/`](#apilogin)
-    - [Exemplo de request](#exemplo-de-request-1)
-    - [Corpo da requisição](#corpo-da-requisição-1)
-    - [Exemplo de Response](#exemplo-de-response-1)
-    - [Possíveis erros:](#possíveis-erros-1)
-    - [1.3 Listagem de Usuários](#13-listagem-de-usuários)
-    - [`api/users/`](#apiusers-1)
-  - [Possíveis Erros:](#possíveis-erros-2)
-    - [1.4 Listando usuário por ID](#14-listando-usuário-por-id)
-    - [`api/users/<user_id>/`](#apiusersuser_id)
-  - [Possíveis Erros:](#possíveis-erros-3)
-    - [1.5 Listando usuários mais recentes por quantia](#15-listando-usuários-mais-recentes-por-quantia)
-    - [`/api/users/newest/<quantity>/`](#apiusersnewestquantity)
-  - [Possíveis Erros:](#possíveis-erros-4)
+      - [Endpoints](#endpoints)
+      - [1.1 Criação de usuário](#11-criação-de-usuário)
+      - [1.2 Login de usuário](#12-login-de-usuário)
+      - [1.3 Listagem de Usuários](#13-listagem-de-usuários)
+      - [1.4 Listando usuário por ID](#14-listando-usuário-por-id)
+      - [1.5 Listando usuários mais recentes por quantia](#15-listando-usuários-mais-recentes-por-quantia)
 
 ## 1. Visão Geral
 
@@ -373,7 +355,7 @@ Exemplo de response:
 
 [Voltar aos endpoints](#5-endpoints)
 
-### `/api/users/newest/<quantity>/`
+### `/api/users/newest/<by_quantity>/`
 
 Exemplo de Request:
 
