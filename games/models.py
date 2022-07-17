@@ -8,3 +8,5 @@ class Game(models.Model):
     name = models.CharField(max_length=64, unique=True)
     image_url = models.URLField(max_length=255)
     release_date = models.DateField()
+
+    platforms = models.ManyToManyField("platforms.Platform", related_name="platforms")

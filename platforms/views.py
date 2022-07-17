@@ -5,12 +5,13 @@ from platforms.models import Platform
 from platforms.serializers import PlatformSerializer
 
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+
+from users.permissions import SuperUserPermissions
 
 
 class ListCreatePlatformView(SerializerByMethodMixin, generics.ListCreateAPIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [SuperUserPermissions]
 
     queryset = Platform.objects.all()
     serializer_map = {
