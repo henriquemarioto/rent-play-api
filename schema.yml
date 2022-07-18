@@ -1,0 +1,1347 @@
+openapi: 3.0.3
+info:
+  title: Rent & Play
+  version: '1.0'
+  description: Api from Rent & Play project
+paths:
+  /api/games/:
+    get:
+      operationId: api_games_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGameList'
+          description: ''
+    post:
+      operationId: api_games_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Game'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Game'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+          description: ''
+  /api/login/:
+    post:
+      operationId: api_login_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/platforms/:
+    get:
+      operationId: api_platforms_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlatformList'
+          description: ''
+    post:
+      operationId: api_platforms_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Platform'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Platform'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Platform'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Platform'
+          description: ''
+  /api/rent_accounts/:
+    get:
+      operationId: api_rent_accounts_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
+          description: ''
+    post:
+      operationId: api_rent_accounts_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRentAccount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateRentAccount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateRentAccount'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRentAccount'
+          description: ''
+  /api/rent_accounts/{id}/:
+    get:
+      operationId: api_rent_accounts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAndRetriveRentAccount'
+          description: ''
+    put:
+      operationId: api_rent_accounts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: api_rent_accounts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDeleteRentAccount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDeleteRentAccount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDeleteRentAccount'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateDeleteRentAccount'
+          description: ''
+    delete:
+      operationId: api_rent_accounts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/rent_accounts/{id}/games/add/:
+    put:
+      operationId: api_rent_accounts_games_add_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddGamesRentAccountById'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddGamesRentAccountById'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddGamesRentAccountById'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddGamesRentAccountById'
+          description: ''
+    patch:
+      operationId: api_rent_accounts_games_add_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAddGamesRentAccountById'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAddGamesRentAccountById'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAddGamesRentAccountById'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddGamesRentAccountById'
+          description: ''
+  /api/rent_accounts/{id}/games/remove/:
+    put:
+      operationId: api_rent_accounts_games_remove_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveGamesRentAccountById'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RemoveGamesRentAccountById'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RemoveGamesRentAccountById'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveGamesRentAccountById'
+          description: ''
+    patch:
+      operationId: api_rent_accounts_games_remove_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRemoveGamesRentAccountById'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRemoveGamesRentAccountById'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRemoveGamesRentAccountById'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveGamesRentAccountById'
+          description: ''
+  /api/rent_accounts/{id}/rent/:
+    patch:
+      operationId: api_rent_accounts_rent_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/rent_accounts/{id}/return/:
+    patch:
+      operationId: api_rent_accounts_return_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/rent_accounts/owner/:
+    get:
+      operationId: api_rent_accounts_owner_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
+          description: ''
+  /api/rent_accounts/renter/:
+    get:
+      operationId: api_rent_accounts_renter_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
+          description: ''
+  /api/rent_accounts/user/{id}/:
+    get:
+      operationId: api_rent_accounts_user_list
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
+          description: ''
+  /api/rent_history/:
+    get:
+      operationId: api_rent_history_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRentHistoryList'
+          description: ''
+  /api/rent_history/{id}/:
+    get:
+      operationId: api_rent_history_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rent history.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentHistory'
+          description: ''
+  /api/rent_history/create/{rent_account_pk}/:
+    post:
+      operationId: api_rent_history_create_create
+      parameters:
+      - in: path
+        name: rent_account_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentHistory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RentHistory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RentHistory'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentHistory'
+          description: ''
+  /api/users/:
+    get:
+      operationId: api_users_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: api_users_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: api_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: api_users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/management/:
+    put:
+      operationId: api_users_management_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: api_users_management_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIsActiveUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIsActiveUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIsActiveUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsActiveUser'
+          description: ''
+  /api/users/newest/{num}/:
+    get:
+      operationId: api_users_newest_list
+      parameters:
+      - in: path
+        name: num
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+components:
+  schemas:
+    AddGamesRentAccountById:
+      type: object
+      properties:
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+      required:
+      - games
+    CreateRentAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        login:
+          type: string
+          writeOnly: true
+          maxLength: 255
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 255
+        price_per_day:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+        platform:
+          $ref: '#/components/schemas/Platform'
+      required:
+      - games
+      - id
+      - login
+      - owner
+      - password
+      - platform
+      - price_per_day
+    Game:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        game_api_id:
+          type: integer
+        name:
+          type: string
+          maxLength: 16
+        image_url:
+          type: string
+          format: uri
+          maxLength: 255
+        release_date:
+          type: string
+          format: date
+      required:
+      - game_api_id
+      - id
+      - image_url
+      - name
+      - release_date
+    IsActiveUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nickname:
+          type: string
+          maxLength: 16
+        first_name:
+          type: string
+          maxLength: 255
+        last_name:
+          type: string
+          maxLength: 255
+        cellphone:
+          type: string
+          maxLength: 11
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 128
+      required:
+      - cellphone
+      - email
+      - first_name
+      - id
+      - last_name
+      - nickname
+      - password
+    ListAndRetriveRentAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        price_per_day:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        renter:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        platform:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Nested'
+          readOnly: true
+      required:
+      - games
+      - id
+      - owner
+      - platform
+      - price_per_day
+      - renter
+    Nested:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        password:
+          type: string
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+        nickname:
+          type: string
+          maxLength: 16
+        first_name:
+          type: string
+          maxLength: 255
+        last_name:
+          type: string
+          maxLength: 255
+        cellphone:
+          type: string
+          maxLength: 11
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        wallet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        groups:
+          type: array
+          items:
+            type: integer
+          description: The groups this user belongs to. A user will get all permissions
+            granted to each of their groups.
+        user_permissions:
+          type: array
+          items:
+            type: integer
+          description: Specific permissions for this user.
+      required:
+      - cellphone
+      - email
+      - first_name
+      - id
+      - last_name
+      - nickname
+      - password
+    PaginatedGameList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+    PaginatedListAndRetriveRentAccountList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListAndRetriveRentAccount'
+    PaginatedPlatformList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Platform'
+    PaginatedRentHistoryList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RentHistory'
+    PaginatedUserList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PatchedAddGamesRentAccountById:
+      type: object
+      properties:
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+    PatchedIsActiveUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nickname:
+          type: string
+          maxLength: 16
+        first_name:
+          type: string
+          maxLength: 255
+        last_name:
+          type: string
+          maxLength: 255
+        cellphone:
+          type: string
+          maxLength: 11
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 128
+    PatchedRemoveGamesRentAccountById:
+      type: object
+      properties:
+        game_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+          readOnly: true
+    PatchedUpdateDeleteRentAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        login:
+          type: string
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 255
+        price_per_day:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nickname:
+          type: string
+          maxLength: 16
+        first_name:
+          type: string
+          maxLength: 255
+        last_name:
+          type: string
+          maxLength: 255
+        cellphone:
+          type: string
+          maxLength: 11
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        wallet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+    Platform:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        platform_api_id:
+          type: integer
+        name:
+          type: string
+          maxLength: 16
+        image_url:
+          type: string
+          format: uri
+          maxLength: 255
+      required:
+      - id
+      - image_url
+      - name
+      - platform_api_id
+    RemoveGamesRentAccountById:
+      type: object
+      properties:
+        game_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+          readOnly: true
+      required:
+      - game_ids
+      - games
+    RentAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        price_per_day:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        renter:
+          type: string
+          format: uuid
+          nullable: true
+        owner:
+          type: string
+          format: uuid
+        platform:
+          type: string
+          format: uuid
+        games:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - games
+      - id
+      - owner
+      - platform
+      - price_per_day
+    RentHistory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        rent_account:
+          allOf:
+          - $ref: '#/components/schemas/RentAccount'
+          readOnly: true
+        renter:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        start_date:
+          type: string
+          format: date-time
+          readOnly: true
+        end_date:
+          type: string
+          format: date-time
+        return_date:
+          type: string
+          format: date-time
+          nullable: true
+        total_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+      required:
+      - end_date
+      - id
+      - rent_account
+      - renter
+      - start_date
+      - total_price
+    UpdateDeleteRentAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        login:
+          type: string
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 255
+        price_per_day:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+      required:
+      - id
+      - login
+      - password
+      - price_per_day
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nickname:
+          type: string
+          maxLength: 16
+        first_name:
+          type: string
+          maxLength: 255
+        last_name:
+          type: string
+          maxLength: 255
+        cellphone:
+          type: string
+          maxLength: 11
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        wallet:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - cellphone
+      - email
+      - first_name
+      - id
+      - last_name
+      - nickname
+      - password
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
