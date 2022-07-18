@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 
 from django.shortcuts import get_object_or_404
+from platforms.models import Platform
 from rent_play.permissions import OwnerAndAdminPermissions, RenterAndOwnerPermissions
 from rents_history.models import RentHistory
 from rents_history.serializers import RentHistorySerializer
@@ -33,7 +34,8 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
     }
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        platform = get_object_or_404(Platform, pk=self.request.data["platform"])
+        serializer.save(owner=self.request.user, platform=platform)
 
 
 class ListRentAccountUserbyIdView(generics.ListAPIView):
