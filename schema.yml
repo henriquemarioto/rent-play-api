@@ -59,13 +59,29 @@ paths:
       operationId: api_login_create
       tags:
       - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
       - {}
       responses:
         '201':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
   /api/platforms/:
     get:
       operationId: api_platforms_list
@@ -79,9 +95,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -106,9 +120,7 @@ paths:
               $ref: '#/components/schemas/Platform'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -406,16 +418,33 @@ paths:
         name: id
         schema:
           type: string
+          format: uuid
+        description: A UUID string identifying this rent account.
         required: true
       tags:
       - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDeleteRentAccount'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDeleteRentAccount'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateDeleteRentAccount'
       security:
       - cookieAuth: []
       - basicAuth: []
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateDeleteRentAccount'
+          description: ''
   /api/rent_accounts/owner/:
     get:
       operationId: api_rent_accounts_owner_list
@@ -822,11 +851,17 @@ components:
         release_date:
           type: string
           format: date
+        platforms:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - game_api_id
       - id
       - image_url
       - name
+      - platforms
       - release_date
     IsActiveUser:
       type: object
@@ -1174,12 +1209,16 @@ components:
           type: integer
         name:
           type: string
-          maxLength: 16
+          maxLength: 30
         image_url:
           type: string
           format: uri
           maxLength: 255
+        icon:
+          type: string
+          maxLength: 40
       required:
+      - icon
       - id
       - image_url
       - name
