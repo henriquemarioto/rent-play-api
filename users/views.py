@@ -23,7 +23,11 @@ class UserView(SerializerByMethodMixin, generics.ListCreateAPIView):
 
 
 class UserLoginView(generics.CreateAPIView):
+    queryset = User
+    serializer_class = UserSerializer
+
     def post(self, request):
+
         serializer = UserLoginSerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
