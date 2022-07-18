@@ -1,3 +1,4 @@
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.urls import path
 
 from .views import (
@@ -22,4 +23,10 @@ urlpatterns = [
     path("rent_accounts/<pk>/games/remove/", RemoveGamesRentAccountByIdView.as_view()),
     path("rent_accounts/<pk>/rent/", RentRentAccountByIdView.as_view()),
     path("rent_accounts/<pk>/return/", ReturnRentAccountByIdView.as_view()),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ]
