@@ -11,4 +11,4 @@ class PlatformSerializer(serializers.ModelSerializer):
         fields = "__all__"
     
     platform_api_id = serializers.IntegerField()
-    name = serializers.CharField(max_length=16)
+    name = serializers.CharField(max_length=30)
