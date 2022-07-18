@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('platform_api_id', models.IntegerField(unique=True)),
-                ('name', models.CharField(max_length=16, unique=True)),
+                ('name', models.CharField(max_length=30, unique=True)),
                 ('image_url', models.URLField(max_length=255)),
             ],
         ),

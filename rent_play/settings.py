@@ -117,13 +117,15 @@ else:
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+print
+
 if DATABASE_URL:
     db_from_env = dj_database_url.config(
         default=DATABASE_URL, conn_max_age=500, ssl_require=True
     )
     DATABASES["default"].update(db_from_env)
 
-ALLOWED_HOSTS = ["rent-play.herokuapp.com", "localhost"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
