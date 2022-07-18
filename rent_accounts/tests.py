@@ -26,6 +26,7 @@ class RentAccountModelTest(APITestCase):
     # CRIAR PLATAFORMA 
         cls.platfrom_data = {
             "platform_api_id" : "1",
+            "icon" : "testeicon",
             "name" : "xbox",
             "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg"
         }   
@@ -38,20 +39,21 @@ class RentAccountModelTest(APITestCase):
             "game_api_id" : "1",
             "name" : "Halo",
             "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg",
-            "release_date" : "2022-07-15"
+            "release_date" : "2022-07-15",
+            "platforms" : ["22f9819d-56fc-4258-84b6-03025873795b"]
         }      
         
         cls.games = [Game.objects.create(**cls.game_data)]
         
 
         # CRIAR RENT ACCOUNT
-        cls.rent_account_data = {
-           "login" : "conta1@mail.com",
-           "password" : "123456",
-           "price_per_day" : "3.50",
-           "platform" : cls.platform,
-           "owner" : cls.tester2,
-        #  "games" : [cls.game]       
+        cls.rent_account_data = {            
+            "login" : "conta1@mail.com",
+            "password" : "123456",
+            "price_per_day" : "3.50",
+            "platform" : cls.platform,
+            "owner" : cls.tester2,
+            "games" : [cls.games]       
         }
         cls.rent_account = RentAccount.objects.create(**cls.rent_account_data)   
 
@@ -66,12 +68,12 @@ class RentAccountModelTest(APITestCase):
         self.assertEquals(len(self.games), self.rent_account.games.count())       
 
 # class RentAccountViewTest(APITestCase):    
-    def test_register_user(self):
+    # def test_register_user(self):
         # new_user = User.objects.create_user(**self.user)
         # token = self.client.post("/api/login/", {"email": self.tester2.email, "password": self.tester2.password}, format="json").json['access']
-        token = self.client.post("/api/login/", data=self.tester2, format="json").json['access']       
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-        self.assertEquals(token.status_code, status.HTTP_200_OK)
+        # token = self.client.post("/login/", data=self.tester2, format="json").json['access']       
+        # self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        # self.assertEquals(token.status_code, status.HTTP_200_OK)
        
     
     # def test_list_rent_account(self):
