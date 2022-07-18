@@ -1,4 +1,6 @@
 import datetime
+from platform import platform
+
 from django.shortcuts import get_object_or_404
 from games.models import Game
 from games.serializers import GameSerializer
@@ -15,7 +17,7 @@ from .models import RentAccount
 class CreateRentAccountSerializer(serializers.ModelSerializer):
     games = GameSerializer(many=True)
     owner = UserSerializer(read_only=True)
-    platform = PlatformSerializer()
+    platform = PlatformSerializer(read_only=True)
 
     class Meta:
         model = RentAccount
@@ -35,13 +37,17 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict):
         games = validated_data.pop("games")
-        platform_data = validated_data.pop("platform")
-
-        platform, _ = Platform.objects.get_or_create(**platform_data)
-        rent_account = RentAccount.objects.create(**validated_data, platform=platform)
+        rent_account = RentAccount.objects.create(**validated_data)
 
         for item in games:
+            platforms = item.pop("platforms")
+
             game, _ = Game.objects.get_or_create(**item)
+
+            for platform in platforms:
+                platform_data = Platform.objects.get(pk=platform.id)
+                game.platforms.add(platform_data)
+
             rent_account.games.add(game)
 
         return rent_account
@@ -97,4 +103,3 @@ class RemoveGamesRentAccountByIdSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.games.remove(*validated_data["games"])
         return {}
-
