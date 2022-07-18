@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rent_accounts",
     "rents_history",
     "platforms",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -170,4 +171,12 @@ AUTH_USER_MODEL = "users.User"
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Rent & Play",
+    "DESCRIPTION": "Api from Rent & Play project",
+    "VERSION": "1.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
