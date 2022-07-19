@@ -40,6 +40,39 @@ class UserSerializer(serializers.ModelSerializer):
 
         return instance
 
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "nickname",
+            "first_name",
+            "last_name",
+            "cellphone",
+            "email",
+            "wallet",
+            "password",
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "is_active": {"read_only": True},
+        }
+
+
+    def update(self, instance: User, validated_data: dict):
+        if "wallet" in validated_data:
+            validated_data["wallet"] += instance.wallet
+
+        for key, value in validated_data.items():
+            if key == "password":
+                instance.set_password(value)
+            else:
+                setattr(instance, key, value)
+
+        instance.save()
+
+        return instance
+
 
 class UserLoginSerializer(serializers.Serializer):
     token = serializers.CharField(read_only=True)

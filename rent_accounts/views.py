@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response, status
 from users.mixins import SerializerByMethodMixin
 from users.models import User
-from .exceptions import EmailAlreadyExistInThisPlatform, PlatformDoesnotExist
+from .exceptions import EmailAlreadyExistInThisPlatform, PlatformDoesnotExist, ForbiddenNoGames
 
 from .models import RentAccount
 from .serializers import (
@@ -39,6 +39,9 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         login = self.request.data["login"]
         platform = get_object_or_404(Platform, pk=self.request.data["platform"])
         rent_account = RentAccount.objects.filter(login=login, platform=platform)
+
+        if len(self.request.data["games"]) < 1:
+            raise ForbiddenNoGames
 
         for game in self.request.data["games"]:
             for game_platform in game["platforms"]:   
