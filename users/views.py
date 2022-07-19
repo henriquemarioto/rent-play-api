@@ -23,21 +23,26 @@ class UserView(SerializerByMethodMixin, generics.ListCreateAPIView):
 
 
 class UserLoginView(generics.CreateAPIView):
-    def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
+    queryset = User
+    serializer_class = UserLoginSerializer
 
-        serializer.is_valid(raise_exception=True)
+    def post(self, request):
+
+        login_serializer = UserLoginSerializer(data=request.data)
+
+        login_serializer.is_valid(raise_exception=True)
 
         user = authenticate(
-            username=serializer.validated_data["email"],
-            password=serializer.validated_data["password"],
+            username=login_serializer.validated_data["email"],
+            password=login_serializer.validated_data["password"],
         )
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
-            serializer = UserSerializer(user)
-
-            return Response({"token": token.key, "user": serializer.data})
+            user.user = user
+            user.token = token.key
+            login_serializer = UserLoginSerializer(user)
+            return Response(login_serializer.data)
 
         return Response(
             {"detail": "invalid username or password"},
