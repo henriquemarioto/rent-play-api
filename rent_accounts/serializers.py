@@ -13,9 +13,15 @@ from users.serializers import UserSerializer
 
 from .models import RentAccount
 
+class AddGameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = "__all__"
+
+        read_only_fields = ["platforms", "game_api_id", "name"]
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
-    games = GameSerializer(many=True)
+    games = AddGameSerializer(many=True)
     owner = UserSerializer(read_only=True)
     platform = PlatformSerializer(read_only=True)
 
@@ -34,19 +40,14 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
             "login": {"write_only": True},
             "password": {"write_only": True},
         }
+        depth = 1
 
     def create(self, validated_data: dict):
         games = validated_data.pop("games")
         rent_account = RentAccount.objects.create(**validated_data)
-
         for item in games:
-            platforms = item.pop("platforms")
-
             game, _ = Game.objects.get_or_create(**item)
-
-            for platform in platforms:
-                platform_data = Platform.objects.get(pk=platform.id)
-                game.platforms.add(platform_data)
+            game.platforms.add(validated_data["platform"].id)
 
             rent_account.games.add(game)
 
@@ -74,6 +75,7 @@ class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):
         model = RentAccount
         exclude = ["owner", "platform", "renter", "games"]
 
+   
 
 class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
     games = GameSerializer(many=True)
@@ -83,8 +85,13 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
         fields = ["games"]
 
     def update(self, instance, validated_data):
+        print("AQUIIIIIIIIIIIIIIIIIII", instance.platform.id)
         for item in validated_data["games"]:
+            item.pop("platforms")
+
             game, _ = Game.objects.get_or_create(**item)
+            game.platforms.add(instance.platform.id)
+            
             instance.games.add(game)
 
         return instance
