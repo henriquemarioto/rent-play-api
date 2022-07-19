@@ -18,7 +18,7 @@ class AddGameSerializer(serializers.ModelSerializer):
         model = Game
         fields = "__all__"
 
-        read_only_fields = ["platforms"]
+        read_only_fields = ["platforms", "game_api_id", "name"]
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
     games = AddGameSerializer(many=True)
@@ -63,7 +63,7 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
 
 class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
-    renter = UserSerializer(read_only=True)
+
     class Meta:
         model = RentAccount
         exclude = ["login", "password"]

@@ -1,4 +1,3 @@
-from lib2to3.pgen2 import token
 from rest_framework import serializers
 
 from users.models import User
@@ -42,9 +41,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
-    token = serializers.CharField(read_only=True)
-    user = UserSerializer(read_only=True)
-    email = serializers.EmailField(write_only=True)
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
 

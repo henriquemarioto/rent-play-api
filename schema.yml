@@ -4,9 +4,9 @@ info:
   version: '1.0'
   description: Api from Rent & Play project
 paths:
-  /games/:
+  /api/games/:
     get:
-      operationId: games_list
+      operationId: api_games_list
       parameters:
       - name: page
         required: false
@@ -15,7 +15,7 @@ paths:
         schema:
           type: integer
       tags:
-      - games
+      - api
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -28,9 +28,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedGameList'
           description: ''
     post:
-      operationId: games_create
+      operationId: api_games_create
       tags:
-      - games
+      - api
       requestBody:
         content:
           application/json:
@@ -54,22 +54,56 @@ paths:
               schema:
                 $ref: '#/components/schemas/Game'
           description: ''
-  /login/:
+  /api/login/:
     post:
-      operationId: login_create
+      operationId: api_login_create
       tags:
-      - login
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/platforms/:
+    get:
+      operationId: api_platforms_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlatformList'
+          description: ''
+    post:
+      operationId: api_platforms_create
+      tags:
+      - api
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Platform'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Platform'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Platform'
         required: true
       security:
       - cookieAuth: []
@@ -80,57 +114,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-  /platforms/:
-    get:
-      operationId: platforms_list
-      parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      tags:
-      - platforms
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedPlatformList'
-          description: ''
-    post:
-      operationId: platforms_create
-      tags:
-      - platforms
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Platform'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Platform'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Platform'
-        required: true
-      security:
-      - tokenAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
                 $ref: '#/components/schemas/Platform'
           description: ''
-  /rent_accounts/:
+  /api/rent_accounts/:
     get:
-      operationId: rent_accounts_list
+      operationId: api_rent_accounts_list
       parameters:
       - name: page
         required: false
@@ -139,7 +127,7 @@ paths:
         schema:
           type: integer
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -150,9 +138,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
           description: ''
     post:
-      operationId: rent_accounts_create
+      operationId: api_rent_accounts_create
       tags:
-      - rent_accounts
+      - api
       requestBody:
         content:
           application/json:
@@ -174,9 +162,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateRentAccount'
           description: ''
-  /rent_accounts/{id}/:
+  /api/rent_accounts/{id}/:
     get:
-      operationId: rent_accounts_retrieve
+      operationId: api_rent_accounts_retrieve
       parameters:
       - in: path
         name: id
@@ -186,7 +174,7 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -197,7 +185,7 @@ paths:
                 $ref: '#/components/schemas/ListAndRetriveRentAccount'
           description: ''
     put:
-      operationId: rent_accounts_update
+      operationId: api_rent_accounts_update
       parameters:
       - in: path
         name: id
@@ -207,14 +195,14 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
         '200':
           description: No response body
     patch:
-      operationId: rent_accounts_partial_update
+      operationId: api_rent_accounts_partial_update
       parameters:
       - in: path
         name: id
@@ -224,7 +212,7 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       requestBody:
         content:
           application/json:
@@ -246,7 +234,7 @@ paths:
                 $ref: '#/components/schemas/UpdateDeleteRentAccount'
           description: ''
     delete:
-      operationId: rent_accounts_destroy
+      operationId: api_rent_accounts_destroy
       parameters:
       - in: path
         name: id
@@ -256,15 +244,15 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
         '204':
           description: No response body
-  /rent_accounts/{id}/games/add/:
+  /api/rent_accounts/{id}/games/add/:
     put:
-      operationId: rent_accounts_games_add_update
+      operationId: api_rent_accounts_games_add_update
       parameters:
       - in: path
         name: id
@@ -274,7 +262,7 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       requestBody:
         content:
           application/json:
@@ -297,7 +285,7 @@ paths:
                 $ref: '#/components/schemas/AddGamesRentAccountById'
           description: ''
     patch:
-      operationId: rent_accounts_games_add_partial_update
+      operationId: api_rent_accounts_games_add_partial_update
       parameters:
       - in: path
         name: id
@@ -307,7 +295,7 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       requestBody:
         content:
           application/json:
@@ -328,9 +316,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/AddGamesRentAccountById'
           description: ''
-  /rent_accounts/{id}/games/remove/:
+  /api/rent_accounts/{id}/games/remove/:
     put:
-      operationId: rent_accounts_games_remove_update
+      operationId: api_rent_accounts_games_remove_update
       parameters:
       - in: path
         name: id
@@ -340,7 +328,7 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       requestBody:
         content:
           application/json:
@@ -363,7 +351,7 @@ paths:
                 $ref: '#/components/schemas/RemoveGamesRentAccountById'
           description: ''
     patch:
-      operationId: rent_accounts_games_remove_partial_update
+      operationId: api_rent_accounts_games_remove_partial_update
       parameters:
       - in: path
         name: id
@@ -373,7 +361,7 @@ paths:
         description: A UUID string identifying this rent account.
         required: true
       tags:
-      - rent_accounts
+      - api
       requestBody:
         content:
           application/json:
@@ -394,9 +382,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/RemoveGamesRentAccountById'
           description: ''
-  /rent_accounts/{id}/rent/:
+  /api/rent_accounts/{id}/rent/:
     patch:
-      operationId: rent_accounts_rent_partial_update
+      operationId: api_rent_accounts_rent_partial_update
       parameters:
       - in: path
         name: id
@@ -404,15 +392,15 @@ paths:
           type: string
         required: true
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
         '200':
           description: No response body
-  /rent_accounts/{id}/return/:
+  /api/rent_accounts/{id}/return/:
     patch:
-      operationId: rent_accounts_return_partial_update
+      operationId: api_rent_accounts_return_partial_update
       parameters:
       - in: path
         name: id
@@ -420,7 +408,7 @@ paths:
           type: string
         required: true
       tags:
-      - rent_accounts
+      - api
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -428,9 +416,9 @@ paths:
       responses:
         '200':
           description: No response body
-  /rent_accounts/owner/:
+  /api/rent_accounts/owner/:
     get:
-      operationId: rent_accounts_owner_list
+      operationId: api_rent_accounts_owner_list
       parameters:
       - name: page
         required: false
@@ -439,7 +427,7 @@ paths:
         schema:
           type: integer
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -449,9 +437,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
           description: ''
-  /rent_accounts/renter/:
+  /api/rent_accounts/renter/:
     get:
-      operationId: rent_accounts_renter_list
+      operationId: api_rent_accounts_renter_list
       parameters:
       - name: page
         required: false
@@ -460,7 +448,7 @@ paths:
         schema:
           type: integer
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -470,9 +458,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
           description: ''
-  /rent_accounts/user/{id}/:
+  /api/rent_accounts/user/{id}/:
     get:
-      operationId: rent_accounts_user_list
+      operationId: api_rent_accounts_user_list
       parameters:
       - in: path
         name: id
@@ -486,7 +474,7 @@ paths:
         schema:
           type: integer
       tags:
-      - rent_accounts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -496,9 +484,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedListAndRetriveRentAccountList'
           description: ''
-  /rent_history/:
+  /api/rent_history/:
     get:
-      operationId: rent_history_list
+      operationId: api_rent_history_list
       parameters:
       - name: page
         required: false
@@ -507,7 +495,7 @@ paths:
         schema:
           type: integer
       tags:
-      - rent_history
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -517,9 +505,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedRentHistoryList'
           description: ''
-  /rent_history/{id}/:
+  /api/rent_history/{id}/:
     get:
-      operationId: rent_history_retrieve
+      operationId: api_rent_history_retrieve
       parameters:
       - in: path
         name: id
@@ -529,7 +517,7 @@ paths:
         description: A UUID string identifying this rent history.
         required: true
       tags:
-      - rent_history
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -539,9 +527,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/RentHistory'
           description: ''
-  /rent_history/create/{rent_account_pk}/:
+  /api/rent_history/create/{rent_account_pk}/:
     post:
-      operationId: rent_history_create_create
+      operationId: api_rent_history_create_create
       parameters:
       - in: path
         name: rent_account_pk
@@ -550,7 +538,7 @@ paths:
           format: uuid
         required: true
       tags:
-      - rent_history
+      - api
       requestBody:
         content:
           application/json:
@@ -572,9 +560,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/RentHistory'
           description: ''
-  /users/:
+  /api/users/:
     get:
-      operationId: users_list
+      operationId: api_users_list
       parameters:
       - name: page
         required: false
@@ -583,7 +571,7 @@ paths:
         schema:
           type: integer
       tags:
-      - users
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -594,9 +582,9 @@ paths:
                 $ref: '#/components/schemas/PaginatedUserList'
           description: ''
     post:
-      operationId: users_create
+      operationId: api_users_create
       tags:
-      - users
+      - api
       requestBody:
         content:
           application/json:
@@ -618,9 +606,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
-  /users/{id}/:
+  /api/users/{id}/:
     get:
-      operationId: users_retrieve
+      operationId: api_users_retrieve
       parameters:
       - in: path
         name: id
@@ -630,7 +618,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -641,7 +629,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     put:
-      operationId: users_update
+      operationId: api_users_update
       parameters:
       - in: path
         name: id
@@ -651,14 +639,14 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - api
       security:
       - tokenAuth: []
       responses:
         '200':
           description: No response body
     patch:
-      operationId: users_partial_update
+      operationId: api_users_partial_update
       parameters:
       - in: path
         name: id
@@ -668,7 +656,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - api
       requestBody:
         content:
           application/json:
@@ -689,9 +677,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
-  /users/{id}/management/:
+  /api/users/{id}/management/:
     put:
-      operationId: users_management_update
+      operationId: api_users_management_update
       parameters:
       - in: path
         name: id
@@ -701,14 +689,14 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - api
       security:
       - tokenAuth: []
       responses:
         '200':
           description: No response body
     patch:
-      operationId: users_management_partial_update
+      operationId: api_users_management_partial_update
       parameters:
       - in: path
         name: id
@@ -718,7 +706,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - api
       requestBody:
         content:
           application/json:
@@ -739,9 +727,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/IsActiveUser'
           description: ''
-  /users/newest/{num}/:
+  /api/users/newest/{num}/:
     get:
-      operationId: users_newest_list
+      operationId: api_users_newest_list
       parameters:
       - in: path
         name: num
@@ -755,7 +743,7 @@ paths:
         schema:
           type: integer
       tags:
-      - users
+      - api
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -806,9 +794,7 @@ components:
           items:
             $ref: '#/components/schemas/Game'
         platform:
-          allOf:
-          - $ref: '#/components/schemas/Platform'
-          readOnly: true
+          $ref: '#/components/schemas/Platform'
       required:
       - games
       - id
@@ -836,17 +822,11 @@ components:
         release_date:
           type: string
           format: date
-        platforms:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
       - game_api_id
       - id
       - image_url
       - name
-      - platforms
       - release_date
     IsActiveUser:
       type: object
@@ -1194,16 +1174,12 @@ components:
           type: integer
         name:
           type: string
-          maxLength: 30
+          maxLength: 16
         image_url:
           type: string
           format: uri
           maxLength: 255
-        icon:
-          type: string
-          maxLength: 40
       required:
-      - icon
       - id
       - image_url
       - name
