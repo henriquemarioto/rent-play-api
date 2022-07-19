@@ -34,6 +34,7 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         "POST": CreateRentAccountSerializer,
     }
 
+
     def perform_create(self, serializer):
         login = self.request.data["login"]
         platform = get_object_or_404(Platform, pk=self.request.data["platform"])
