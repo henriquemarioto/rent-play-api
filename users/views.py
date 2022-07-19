@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.views import Response, status
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from users.mixins import SerializerByMethodMixin
 from users.permissions import (
@@ -61,7 +62,10 @@ class ListUsersFilterView(generics.ListAPIView):
 
 class UpdateUserView(SerializerByMethodMixin, generics.RetrieveUpdateAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [UserPermissions]
+    permission_classes = [IsAuthenticated, UserPermissions, SuperUserPermissions]
+
+    def show(self, request):
+        print("AQUIIIIIIIIIIIIIIIIIII", self.request.user)
 
     queryset = User.objects.all()
     serializer_map = {"PATCH": UserSerializer, "GET": UserSerializer}
