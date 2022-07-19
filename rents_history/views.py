@@ -10,8 +10,6 @@ from .serializers import RentHistorySerializer
 
 from rent_play.permissions import OwnerAndAdminPermissions
 
-from rents_history.mixins import SerializerByMethodMixin
-
 
 # Create your views here.
 
@@ -24,24 +22,30 @@ class ListRentHistoryView(generics.ListAPIView):
     serializer_class = RentHistorySerializer
 
 
-class CreateRentHistoryView(SerializerByMethodMixin, generics.CreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    queryset = RentHistory.objects.all()
-    serializer_map = {"POST": RentHistorySerializer}
-
-    def perform_create(self, serializer):
-        rent_account_id = self.kwargs["rent_account_pk"]
-
-        rent_account = get_object_or_404(RentAccount, pk=rent_account_id)
-
-        serializer.save(user=[self.request.user], rent_accounts=[rent_account])
-
-
 class RetrieveRentHistoryDetailView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
 
     queryset = RentHistory.objects.all()
     serializer_class = RentHistorySerializer
+
+class ListRentHistoryRentedByOtherUsersView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
+
+    serializer_class = RentHistorySerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return RentHistory.objects.filter(rent_account__owner__id=user.id)
+
+class ListRentHistoryUserRentedView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, OwnerAndAdminPermissions]
+
+    serializer_class = RentHistorySerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        
+        return RentHistory.objects.filter(renter=user.id)

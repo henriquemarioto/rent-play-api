@@ -114,15 +114,24 @@ class RentRentAccountByIdView(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
-
         try:
             rent_account = get_object_or_404(RentAccount, pk=pk)
         except:
             return Response({"message": "Account not found"}, status.HTTP_404_NOT_FOUND)
 
         renter = self.request.user
-        admin = get_object_or_404(User, email="admin@rentandplay.com.br")
+        try:
+            admin = get_object_or_404(User, email="admin@rentandplay.com.br")
+        except:
+            return Response({"message": "Admin's account not found"}, status.HTTP_404_NOT_FOUND)
+        
         account_owner = get_object_or_404(User, email=rent_account.owner.email)
+        
+        if renter.id == account_owner.id:
+            return Response(
+                {"message": "You can't rent your own account!"},
+                status.HTTP_403_FORBIDDEN,
+            )
 
         if rent_account.renter:
             return Response(
