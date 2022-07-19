@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response, status
 from users.mixins import SerializerByMethodMixin
 from users.models import User
-from .exceptions import EmailAlreadyExistInThisPlatform
+from .exceptions import EmailAlreadyExistInThisPlatform, PlatformDoesnotExist
 
 from .models import RentAccount
 from .serializers import (
@@ -39,10 +39,20 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         login = self.request.data["login"]
         platform = get_object_or_404(Platform, pk=self.request.data["platform"])
         rent_account = RentAccount.objects.filter(login=login, platform=platform)
+
+        for game in self.request.data["games"]:
+            for game_platform in game["platforms"]:   
+                platform_exists = Platform.objects.filter(pk=game_platform)
+
+                if not platform_exists:
+                    raise PlatformDoesnotExist
+        
         
         if rent_account:
             raise EmailAlreadyExistInThisPlatform
         serializer.save(owner=self.request.user, platform=platform)
+
+
 
 
 class ListRentAccountUserbyIdView(generics.ListAPIView):
@@ -126,7 +136,7 @@ class RentRentAccountByIdView(APIView):
             return Response({"message": "Admin's account not found"}, status.HTTP_404_NOT_FOUND)
         
         account_owner = get_object_or_404(User, email=rent_account.owner.email)
-        
+
         if renter.id == account_owner.id:
             return Response(
                 {"message": "You can't rent your own account!"},

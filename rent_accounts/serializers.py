@@ -13,12 +13,17 @@ from users.serializers import UserSerializer
 
 from .models import RentAccount
 
+
 class AddGameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = "__all__"
 
         read_only_fields = ["platforms"]
+
+    game_api_id = serializers.IntegerField()
+    name = serializers.CharField(max_length=16)
+
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
     games = AddGameSerializer(many=True)
@@ -43,13 +48,22 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
         depth = 1
 
     def create(self, validated_data: dict):
+        
         games = validated_data.pop("games")
         rent_account = RentAccount.objects.create(**validated_data)
         for item in games:
-            game, _ = Game.objects.get_or_create(**item)
-            game.platforms.add(validated_data["platform"].id)
+            game_exists = Game.objects.get(game_api_id=item["game_api_id"])
+            if not game_exists:
+                game = Game.objects.create(**item)
+                
+                platforms = game.pop("platforms")
 
-            rent_account.games.add(game)
+                for platform in platforms:
+                    game.platforms.add(platform)
+                
+                rent_account.games.add(game)
+
+            rent_account.games.add(game_exists)
 
         return rent_account
 
@@ -64,6 +78,7 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
 class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     renter = UserSerializer(read_only=True)
+
     class Meta:
         model = RentAccount
         exclude = ["login", "password"]
@@ -75,7 +90,6 @@ class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):
         model = RentAccount
         exclude = ["owner", "platform", "renter", "games"]
 
-   
 
 class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
     games = GameSerializer(many=True)
@@ -91,7 +105,7 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
 
             game, _ = Game.objects.get_or_create(**item)
             game.platforms.add(instance.platform.id)
-            
+
             instance.games.add(game)
 
         return instance
