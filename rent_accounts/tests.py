@@ -99,19 +99,20 @@ class RentAccountModelTest(APITestCase):
     def test_create_rent_account(self):
         self.client.force_authenticate(user=self.tester2)
         platform2 = Platform.objects.get(platform_api_id=3)
-        games2 = {"game_api_id": "2", "name": "Jogo Tri", "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg", "release_date": "1990-01-03"}
+        games2 = [{"game_api_id": "2", "name": "Jogo Tri", "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg", "release_date": "1990-01-03"}]
        
         rent_account2 = {
             "platform": platform2.id,
             "login": "login@mail.com",
             "password": "12345",
             "price_per_day": "2.50",                
-            "games": [games2]
+            # "games": ([{"game_api_id": "2", "name": "Jogo Tri", "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg", "release_date": "1990-01-03"}])
+            "games": games2
         }
         print("AQYYYYYYYUIIIIIIIIIIII", rent_account2)
        
                      
-        response = self.client.post("/rent_accounts/", data=rent_account2)
+        response = self.client.post("/rent_accounts/", data=rent_account2, format='json')
         print("AQUIIIIIIIIIIIIIIIIII2", response.data)
 
 
