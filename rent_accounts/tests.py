@@ -1,6 +1,9 @@
+from platform import platform
 from django.test import TestCase
 from rest_framework.test import APITestCase
 from games.models import Game
+from rest_framework.authtoken.models import Token
+import pdb
 
 from rent_accounts.models import RentAccount
 from users.models import User
@@ -23,39 +26,40 @@ class RentAccountModelTest(APITestCase):
         }
         
         cls.tester2 = User.objects.create_user(**cls.tester2_data)
-    # CRIAR PLATAFORMA 
-        cls.platfrom_data = {
-            "platform_api_id" : "1",
-            "name" : "xbox",
-            "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg"
-        }   
+    # BUSCAR PLATAFORMA 
+        # cls.platfrom_data = {
+        #     "platform_api_id" : "1",
+        #     "icon" : "testeicon",
+        #     "name" : "xbox",
+        #     "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg"
+        # }   
        
         
-        cls.platform = Platform.objects.create(**cls.platfrom_data)
+        cls.platform = Platform.objects.get(platform_api_id=1)
 
         # CRIAR GAME 
         cls.game_data = {
             "game_api_id" : "1",
             "name" : "Halo",
             "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg",
-            "release_date" : "2022-07-15"
+            "release_date" : "2022-07-15"          
         }      
         
         cls.games = [Game.objects.create(**cls.game_data)]
         
 
         # CRIAR RENT ACCOUNT
-        cls.rent_account_data = {
-           "login" : "conta1@mail.com",
-           "password" : "123456",
-           "price_per_day" : "3.50",
-           "platform" : cls.platform,
-           "owner" : cls.tester2,
-        #  "games" : [cls.game]       
+        cls.rent_account_data = {            
+            "login" : "conta1@mail.com",
+            "password" : "123456",
+            "price_per_day" : "3.50",
+            "platform" : cls.platform,
+            "owner" : cls.tester2,
+            # "games" : [cls.games]       
         }
         cls.rent_account = RentAccount.objects.create(**cls.rent_account_data)   
 
-    def test_attr_(self):
+    def test_attr_(self):              
         for item in self.games:
             self.rent_account.games.add(item)
         self.assertEquals(self.rent_account.login, self.rent_account_data["login"])
@@ -66,48 +70,55 @@ class RentAccountModelTest(APITestCase):
         self.assertEquals(len(self.games), self.rent_account.games.count())       
 
 # class RentAccountViewTest(APITestCase):    
-    def test_register_user(self):
-        # new_user = User.objects.create_user(**self.user)
-        # token = self.client.post("/api/login/", {"email": self.tester2.email, "password": self.tester2.password}, format="json").json['access']
-        token = self.client.post("/api/login/", data=self.tester2, format="json").json['access']       
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-        self.assertEquals(token.status_code, status.HTTP_200_OK)
+    def test_login_user(self):       
+        
+        res = self.client.post("/login/", data={"email": self.tester2_data.get("email"), "password": self.tester2_data.get("password")})
+        token = Token.objects.get(user=self.tester2)             
+       
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(token.key, res.data["token"])
+           
+
+    def test_login_missing_fields(self):   
+        
+        res = self.client.post("/login/", data={})                  
+       
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        self.assertIn("email", res.data)
+        self.assertIn("password", res.data)
+        
        
     
-    # def test_list_rent_account(self):
-    #     response = self.client.get("/api/rent_accounts/")
+    def test_list_rent_account(self):
+        self.client.force_authenticate(user=self.tester2)
+        response = self.client.get("/rent_accounts/")
 
-    #     self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
-    # def test_create_rent_account(self):
-                
-    #     response = self.client.post("/api/rent_accounts/", data=self.rent_account_data, format="json").json['access']
+    def test_create_rent_account(self):
+        self.client.force_authenticate(user=self.tester2)
+        platform2 = Platform.objects.get(platform_api_id=3)
+        games2 = {"game_api_id": "2", "name": "Jogo Tri", "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg", "release_date": "1990-01-03"}
+       
+        rent_account2 = {
+            "platform": platform2.id,
+            "login": "login@mail.com",
+            "password": "12345",
+            "price_per_day": "2.50",                
+            "games": [games2]
+        }
+        print("AQYYYYYYYUIIIIIIIIIIII", rent_account2)
+       
+                     
+        response = self.client.post("/rent_accounts/", data=rent_account2)
+        print("AQUIIIIIIIIIIIIIIIIII2", response.data)
 
-    #     self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        # self.assertEqual(response.auth_token.key, token.data["token"])
-        # {
-        #     "platform": {
-        #         "id": "222e639c-d318-46c2-b505-f51ab03fee9a",
-        #         "platform_api_id": "1",
-        #     "name": "Xbox Live",
-        #     "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg"
-        #     },
-        # "login": "login@mail.com",
-        # "password": "12345",
-        # "price_per_day": 2.50,
-                
-        #     "games": [
-        #         {
-        #             "game_api_id": 1,
-        #             "name": "Jogo TriLegal",
-        #             "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg",
-        #             "release_date": "1990-01-03"
-        #         }
-        #     ]
-        # }
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)       
+        
        
         # new_rent_account = self.client.post("/api/rent_accounts/", data=self.client)
 
-    
-        
+  
    
