@@ -18,7 +18,7 @@ class AddGameSerializer(serializers.ModelSerializer):
         model = Game
         fields = "__all__"
 
-        read_only_fields = ["platforms", "game_api_id", "name"]
+        read_only_fields = ["platforms"]
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
     games = AddGameSerializer(many=True)

@@ -2,9 +2,10 @@ from django.test import TestCase
 from users.models import User
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
+from rest_framework.views import status
 
 
-class UserModelTest(TestCase):
+class UserModelTest(APITestCase):
     # USer
     @classmethod
     def setUpTestData(cls) -> None:
@@ -34,5 +35,15 @@ class UserModelTest(TestCase):
         self.assertEqual(self.tester1.email, self.email)
         self.assertNotEqual(self.tester1.password, self.password)  
 
-    
+    def test_create_user(self):
+        user = {
+            "nickname": "Murilo4",
+            "first_name": "Murilo",
+            "last_name":  "Silva",
+            "password": "12345",
+            "cellphone": "55999999991",
+            "email": "admin4@mail.com"
+        }
+        response = self.client.post("/users/", data=user)        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
 
