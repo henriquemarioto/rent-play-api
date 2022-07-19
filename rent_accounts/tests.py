@@ -42,7 +42,8 @@ class RentAccountModelTest(APITestCase):
             "game_api_id" : "1",
             "name" : "Halo",
             "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg",
-            "release_date" : "2022-07-15"          
+            "release_date" : "2022-07-15",
+            "platforms": [cls.platform.id]          
         }      
         
         cls.games = [Game.objects.create(**cls.game_data)]
@@ -107,12 +108,11 @@ class RentAccountModelTest(APITestCase):
             "password": "12345",
             "price_per_day": "2.50",                
             "games": [games2]
-        }
-        print("AQYYYYYYYUIIIIIIIIIIII", rent_account2)
+        }     
        
                      
-        response = self.client.post("/rent_accounts/", data=rent_account2)
-        print("AQUIIIIIIIIIIIIIIIIII2", response.data)
+        response = self.client.post("/rent_accounts/", data=rent_account2, format='json')
+        
 
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)       
