@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response, status
 from users.mixins import SerializerByMethodMixin
 from users.models import User
+from .exceptions import EmailAlreadyExistInThisPlatform
 
 from .models import RentAccount
 from .serializers import (
@@ -33,8 +34,14 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         "POST": CreateRentAccountSerializer,
     }
 
+
     def perform_create(self, serializer):
+        login = self.request.data["login"]
         platform = get_object_or_404(Platform, pk=self.request.data["platform"])
+        rent_account = RentAccount.objects.filter(login=login, platform=platform)
+        
+        if rent_account:
+            raise EmailAlreadyExistInThisPlatform
         serializer.save(owner=self.request.user, platform=platform)
 
 
