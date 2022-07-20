@@ -10,7 +10,6 @@ from rents_history.models import RentHistory
 from rest_framework import serializers
 from users.models import User
 from users.serializers import UpdateUserSerializer, UserSerializer
-
 from .models import RentAccount
 
 

@@ -36,7 +36,7 @@ class UserLoginView(generics.CreateAPIView):
         user = authenticate(
             username=login_serializer.validated_data["email"],
             password=login_serializer.validated_data["password"],
-        )
+        )        
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
