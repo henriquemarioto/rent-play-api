@@ -12,7 +12,7 @@ from users.permissions import (
 )
 from .models import User
 from rest_framework.authtoken.models import Token
-from .serializers import IsActiveUserSerializer, UserLoginSerializer, UserSerializer
+from .serializers import IsActiveUserSerializer, UpdateUserSerializer, UserLoginSerializer, UserSerializer
 
 
 class UserView(SerializerByMethodMixin, generics.ListCreateAPIView):
@@ -52,6 +52,9 @@ class UserLoginView(generics.CreateAPIView):
 
 
 class ListUsersFilterView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -62,13 +65,10 @@ class ListUsersFilterView(generics.ListAPIView):
 
 class UpdateUserView(SerializerByMethodMixin, generics.RetrieveUpdateAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, UserPermissions, SuperUserPermissions]
-
-    def show(self, request):
-        print("AQUIIIIIIIIIIIIIIIIIII", self.request.user)
+    permission_classes = [UserPermissions]
 
     queryset = User.objects.all()
-    serializer_map = {"PATCH": UserSerializer, "GET": UserSerializer}
+    serializer_map = {"PATCH": UpdateUserSerializer, "GET": UserSerializer}
 
 
 class UpdateIsActiveUserView(SerializerByMethodMixin, generics.UpdateAPIView):
