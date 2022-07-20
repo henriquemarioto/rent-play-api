@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             "wallet",
             "password",
         ]
-
+        read_only_fields = ["wallet"]
         extra_kwargs = {
             "password": {"write_only": True},
             "is_active": {"read_only": True},
