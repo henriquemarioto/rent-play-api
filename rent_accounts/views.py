@@ -12,14 +12,22 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response, status
 from users.mixins import SerializerByMethodMixin
 from users.models import User
-from .exceptions import EmailAlreadyExistInThisPlatform, PlatformDoesnotExist, ForbiddenNoGames
 
+from rent_accounts.utils import rent_account_login_censorship
+
+from .exceptions import (
+    EmailAlreadyExistInThisPlatform,
+    ForbiddenNoGames,
+    PlatformDoesnotExist,
+)
 from .models import RentAccount
 from .serializers import (
     AddGamesRentAccountByIdSerializer,
     CreateRentAccountSerializer,
     ListAndRetriveRentAccountSerializer,
+    ListAndRetriveRentAccountVisitorSerializer,
     RemoveGamesRentAccountByIdSerializer,
+    RetriveRentAccountOwnerOrRenterSerializer,
     UpdateDeleteRentAccountSerializer,
 )
 
@@ -30,10 +38,9 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
 
     queryset = RentAccount.objects.all()
     serializer_map = {
-        "GET": ListAndRetriveRentAccountSerializer,
+        "GET": ListAndRetriveRentAccountVisitorSerializer,
         "POST": CreateRentAccountSerializer,
     }
-
 
     def perform_create(self, serializer):
         login = self.request.data["login"]
@@ -48,13 +55,11 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         serializer.save(owner=self.request.user, platform=platform)
 
 
-
-
 class ListRentAccountUserbyIdView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    serializer_class = ListAndRetriveRentAccountSerializer
+    serializer_class = ListAndRetriveRentAccountVisitorSerializer
 
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.kwargs["pk"])
@@ -66,10 +71,16 @@ class ListRentAccountOwnerView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     serializer_class = ListAndRetriveRentAccountSerializer
-    
+
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.request.user.id)
-        return RentAccount.objects.filter(owner=user)
+
+        rent_accounts = RentAccount.objects.filter(owner=user)
+
+        for rent_account in rent_accounts:
+            rent_account.login = rent_account_login_censorship(rent_account)
+
+        return rent_accounts
 
 
 class ListRentAccountUserbyRenterView(generics.ListAPIView):
@@ -77,11 +88,16 @@ class ListRentAccountUserbyRenterView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     serializer_class = ListAndRetriveRentAccountSerializer
-    
+
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.request.user.id)
-        return RentAccount.objects.filter(renter=user)
 
+        rent_accounts = RentAccount.objects.filter(renter=user)
+
+        for rent_account in rent_accounts:
+            rent_account.login = rent_account_login_censorship(rent_account)
+
+        return rent_accounts
 
 
 class RetrieveUpdateDestroyRentAccountView(
@@ -92,10 +108,21 @@ class RetrieveUpdateDestroyRentAccountView(
 
     queryset = RentAccount.objects.all()
     serializer_map = {
-        "GET": ListAndRetriveRentAccountSerializer,
+        "GET": ListAndRetriveRentAccountVisitorSerializer,
         "PATCH": UpdateDeleteRentAccountSerializer,
         "DELETE": UpdateDeleteRentAccountSerializer,
     }
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.request.user
+        rent_account = get_object_or_404(RentAccount, pk=self.kwargs["pk"])
+        
+        if rent_account.owner.id == user.id or (rent_account.renter and rent_account.renter.id == user.id):
+            serializer = RetriveRentAccountOwnerOrRenterSerializer(rent_account)
+        else:
+            serializer = self.get_serializer(rent_account)
+
+        return Response(serializer.data)
 
 
 class AddGamesRentAccountByIdView(generics.UpdateAPIView):
@@ -134,8 +161,10 @@ class RentRentAccountByIdView(APIView):
         try:
             admin = get_object_or_404(User, email="admin@rentandplay.com.br")
         except:
-            return Response({"message": "Admin's account not found"}, status.HTTP_404_NOT_FOUND)
-        
+            return Response(
+                {"message": "Admin's account not found"}, status.HTTP_404_NOT_FOUND
+            )
+
         account_owner = get_object_or_404(User, email=rent_account.owner.email)
 
         if renter.id == account_owner.id:
@@ -195,7 +224,6 @@ class RentRentAccountByIdView(APIView):
 
 
 class ReturnRentAccountByIdView(APIView):
-
     def patch(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         rent_account = get_object_or_404(RentAccount, pk=pk)
@@ -205,7 +233,10 @@ class ReturnRentAccountByIdView(APIView):
                 RentHistory, rent_account=rent_account, return_date=None
             )
         except:
-            return Response({"message": "This account is already being returned!"}, status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "This account is already being returned!"},
+                status.HTTP_404_NOT_FOUND,
+            )
 
         rent_history.return_date = datetime.datetime.now()
 
@@ -215,5 +246,3 @@ class ReturnRentAccountByIdView(APIView):
         rent_history.save()
 
         return Response({"message": "OK"})
-
-

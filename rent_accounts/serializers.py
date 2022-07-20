@@ -76,6 +76,14 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
 
         return instance
 
+class ListAndRetriveRentAccountVisitorSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    renter = UserSerializer(read_only=True)
+
+    class Meta:
+        model = RentAccount
+        exclude = ["login", "password"]
+        depth = 1
 
 class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
@@ -83,7 +91,16 @@ class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RentAccount
-        exclude = ["login", "password"]
+        exclude = ["password"]
+        depth = 1
+
+class RetriveRentAccountOwnerOrRenterSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    renter = UserSerializer(read_only=True)
+
+    class Meta:
+        model = RentAccount
+        fields = "__all__"
         depth = 1
 
 
