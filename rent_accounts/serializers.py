@@ -20,7 +20,7 @@ class AddGameSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     game_api_id = serializers.IntegerField()
-    name = serializers.CharField(max_length=16)
+    name = serializers.CharField(max_length=255)
 
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
