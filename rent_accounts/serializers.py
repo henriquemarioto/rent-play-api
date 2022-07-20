@@ -101,7 +101,6 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
         fields = ["games"]
 
     def update(self, instance, validated_data):
-        print("AQUIIIIIIIIIIIIIIIIIII", instance.platform.id)
         for item in validated_data["games"]:
             item.pop("platforms")
 
@@ -116,12 +115,13 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
 class RemoveGamesRentAccountByIdSerializer(serializers.ModelSerializer):
     games = GameSerializer(read_only=True, many=True)
     game_ids = serializers.PrimaryKeyRelatedField(
-        queryset=Game.objects.all(), many=True, source="games", write_only=True
+        queryset=Game.objects.all(), many=True, source="games", write_only=True, required=True
     )
 
     class Meta:
         model = RentAccount
         fields = ["game_ids", "games"]
+        read_only_fields = ["games"]
 
     def update(self, instance, validated_data):
         instance.games.remove(*validated_data["games"])
