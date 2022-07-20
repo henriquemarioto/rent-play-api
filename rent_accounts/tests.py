@@ -35,7 +35,9 @@ class RentAccountModelTest(APITestCase):
         # }   
        
         
-        cls.platform = Platform.objects.get(platform_api_id=1)
+        cls.platform1 = Platform.objects.get(platform_api_id=1)
+        cls.platform2 = Platform.objects.get(platform_api_id=2)
+        cls.platforms = [cls.platform1, cls.platform2]
 
         # CRIAR GAME 
         cls.game_data = {
@@ -43,10 +45,11 @@ class RentAccountModelTest(APITestCase):
             "name" : "Halo",
             "image_url" : "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg",
             "release_date" : "2022-07-15",
-            "platforms": [cls.platform.id]          
+            # "platforms": []        
         }      
         
         cls.games = [Game.objects.create(**cls.game_data)]
+        
         
 
         # CRIAR RENT ACCOUNT
@@ -54,15 +57,20 @@ class RentAccountModelTest(APITestCase):
             "login" : "conta1@mail.com",
             "password" : "123456",
             "price_per_day" : "3.50",
-            "platform" : cls.platform,
+            "platform" : cls.platform1,
             "owner" : cls.tester2,
             # "games" : [cls.games]       
         }
         cls.rent_account = RentAccount.objects.create(**cls.rent_account_data)   
 
-    def test_attr_(self):              
+    def test_attr_(self):
+        print("PLATFORMMMMMMMMMM", self.platform1.__dict__)
+        # print("AQUIIIIII PLATFOMMMMMMMMMMMMMM", self.platforms[0].__dict__)                    
+        for item in self.platforms:
+            # print("ITEMMMMMMMMMMM", item)
+            self.games[0].platforms.add(item)
         for item in self.games:
-            self.rent_account.games.add(item)
+            self.rent_account.games.add(item)        
         self.assertEquals(self.rent_account.login, self.rent_account_data["login"])
         self.assertEquals(self.rent_account.password, self.rent_account_data["password"])
         self.assertEquals(self.rent_account.price_per_day, self.rent_account_data["price_per_day"])
@@ -100,7 +108,11 @@ class RentAccountModelTest(APITestCase):
     def test_create_rent_account(self):
         self.client.force_authenticate(user=self.tester2)
         platform2 = Platform.objects.get(platform_api_id=3)
-        games2 = {"game_api_id": "2", "name": "Jogo Tri", "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg", "release_date": "1990-01-03", "platforms": self.platform.id}
+        games2 = {"game_api_id": "2", 
+        "name": "Jogo Tri", 
+        "image_url": "https://files.tecnoblog.net/meiobit/wp-content/uploads/2019/11/20191122god-of-war.jpg", 
+        "release_date": "1990-01-03", 
+        "platforms": [self.platform1.id]}
        
         rent_account2 = {
             "platform": platform2.id,
