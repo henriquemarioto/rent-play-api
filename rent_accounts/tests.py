@@ -152,26 +152,43 @@ class RentAccountModelTest(APITestCase):
 
     def test_update_user_wallet(self):
         self.client.force_authenticate(user=self.tester1)
-        wallet = {"wallet":500.00}
+        wallet = {"wallet": 500.00}
         response = self.client.patch(f"/users/{self.tester1.id}/", data=wallet, format='json')
+        
         self.assertEqual(response.status_code, status.HTTP_200_OK)  
 
 
 
        
     def test_create_rents_history(self):
-        account = self.rent_account.id
-        print("RENTTTTTTTT", account)
-        print("RENTTTTTTTT", self.tester1.__dict__)
-        self.client.force_authenticate(user=self.tester1)
+        self.tester1.wallet = 500
+        self.client.force_authenticate(user=self.tester1)        
+        account = self.rent_account.id       
+       
         rents_days = {
-            "rented_days": 7
-        }
-        
+            "rented_days": 3
+        }        
 
-        response = self.client.patch(f"/rent_accounts/{account}/rent/", data=rents_days, format='json')  
-        print("RESPONSEEEEEEEEEEEEEE", response.data)     
+        response = self.client.patch(f"/rent_accounts/{account}/rent/", data=rents_days, format='json')      
         
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)  
    
+    def test_list_rents_history(self):
+        self.client.force_authenticate(user=self.tester2)
+        response = self.client.get("/rent_histories/")
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+    
+
+    def test_list_rents_history_by_owner(self):
+        self.client.force_authenticate(user=self.tester1)           
+        response = self.client.get(f"/rent_histories/owner/")
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_list_rents_history_by_owner(self):
+        self.client.force_authenticate(user=self.tester2)           
+        response = self.client.get(f"/rent_histories/rented/")
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
