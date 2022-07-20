@@ -28,6 +28,9 @@ class GameViews(SerializerByMethodMixin, generics.ListCreateAPIView):
         
         serializer.save()
 
+    def get_queryset(self):
+        return Game.objects.all().order_by("-release_date")
+
 
 class RetrieveUpdateDestroyGameView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [TokenAuthentication]

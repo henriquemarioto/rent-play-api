@@ -52,6 +52,7 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
 
         if rent_account:
             raise EmailAlreadyExistInThisPlatform
+            
         serializer.save(owner=self.request.user, platform=platform)
 
 
