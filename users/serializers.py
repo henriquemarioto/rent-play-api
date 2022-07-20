@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "cellphone",
             "email",
-            "wallet",
             "password",
         ]
         read_only_fields = ["wallet"]
@@ -25,6 +24,25 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict):
         return User.objects.create_user(**validated_data)
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "nickname",
+            "first_name",
+            "last_name",
+            "cellphone",
+            "email",
+            "wallet",
+            "password",
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "is_active": {"read_only": True},
+        }
+
 
     def update(self, instance: User, validated_data: dict):
         if "wallet" in validated_data:

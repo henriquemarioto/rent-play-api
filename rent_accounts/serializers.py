@@ -9,7 +9,7 @@ from platforms.serializers import PlatformSerializer
 from rents_history.models import RentHistory
 from rest_framework import serializers
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UpdateUserSerializer, UserSerializer
 
 from .models import RentAccount
 
@@ -19,15 +19,13 @@ class AddGameSerializer(serializers.ModelSerializer):
         model = Game
         fields = "__all__"
 
-        read_only_fields = ["platforms"]
-
     game_api_id = serializers.IntegerField()
-    name = serializers.CharField(max_length=16)
+    name = serializers.CharField(max_length=255)
 
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
     games = AddGameSerializer(many=True)
-    owner = UserSerializer(read_only=True)
+    owner =  UserSerializer(read_only=True)
     platform = PlatformSerializer(read_only=True)
 
     class Meta:
@@ -51,19 +49,23 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
         
         games = validated_data.pop("games")
         rent_account = RentAccount.objects.create(**validated_data)
+
         for item in games:
-            game_exists = Game.objects.get(game_api_id=item["game_api_id"])
-            if not game_exists:
+            game_exists = Game.objects.filter(game_api_id=item["game_api_id"])
+            
+            if len(game_exists) == 0:
+                item = dict(item)
+                
+                platforms = item.pop("platforms")
                 game = Game.objects.create(**item)
                 
-                platforms = game.pop("platforms")
-
                 for platform in platforms:
                     game.platforms.add(platform)
                 
                 rent_account.games.add(game)
+            else:
 
-            rent_account.games.add(game_exists)
+                rent_account.games.add(game_exists[0])
 
         return rent_account
 
@@ -99,7 +101,6 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
         fields = ["games"]
 
     def update(self, instance, validated_data):
-        print("AQUIIIIIIIIIIIIIIIIIII", instance.platform.id)
         for item in validated_data["games"]:
             item.pop("platforms")
 
@@ -114,12 +115,13 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
 class RemoveGamesRentAccountByIdSerializer(serializers.ModelSerializer):
     games = GameSerializer(read_only=True, many=True)
     game_ids = serializers.PrimaryKeyRelatedField(
-        queryset=Game.objects.all(), many=True, source="games", write_only=True
+        queryset=Game.objects.all(), many=True, source="games", write_only=True, required=True
     )
 
     class Meta:
         model = RentAccount
         fields = ["game_ids", "games"]
+        read_only_fields = ["games"]
 
     def update(self, instance, validated_data):
         instance.games.remove(*validated_data["games"])
