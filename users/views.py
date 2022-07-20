@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.views import Response, status
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from users.mixins import SerializerByMethodMixin
 from users.permissions import (
@@ -11,7 +12,7 @@ from users.permissions import (
 )
 from .models import User
 from rest_framework.authtoken.models import Token
-from .serializers import IsActiveUserSerializer, UserLoginSerializer, UserSerializer
+from .serializers import IsActiveUserSerializer, UpdateUserSerializer, UserLoginSerializer, UserSerializer
 
 
 class UserView(SerializerByMethodMixin, generics.ListCreateAPIView):
@@ -51,6 +52,9 @@ class UserLoginView(generics.CreateAPIView):
 
 
 class ListUsersFilterView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -64,7 +68,7 @@ class UpdateUserView(SerializerByMethodMixin, generics.RetrieveUpdateAPIView):
     permission_classes = [UserPermissions]
 
     queryset = User.objects.all()
-    serializer_map = {"PATCH": UserSerializer, "GET": UserSerializer}
+    serializer_map = {"PATCH": UpdateUserSerializer, "GET": UserSerializer}
 
 
 class UpdateIsActiveUserView(SerializerByMethodMixin, generics.UpdateAPIView):
