@@ -119,6 +119,12 @@ class RentRentAccountByIdView(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
+        if not self.request.data:
+            return Response(
+                {"message": "rented_days field is required"},
+                status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
             rent_account = get_object_or_404(RentAccount, pk=pk)
         except:
