@@ -1,4 +1,5 @@
 from lib2to3.pgen2 import token
+
 from rest_framework import serializers
 
 from users.models import User
@@ -25,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data: dict):
         return User.objects.create_user(**validated_data)
 
+
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -35,7 +37,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             "last_name",
             "cellphone",
             "email",
-            "wallet",
             "password",
         ]
         extra_kwargs = {
@@ -43,11 +44,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             "is_active": {"read_only": True},
         }
 
-
     def update(self, instance: User, validated_data: dict):
-        if "wallet" in validated_data:
-            validated_data["wallet"] += instance.wallet
-
         for key, value in validated_data.items():
             if key == "password":
                 instance.set_password(value)
@@ -58,6 +55,41 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
         return instance
 
+
+class GetUserWithWalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["nickname", "first_name", "last_name", "cellphone", "email", "wallet"]
+
+class UpdateUserWalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["nickname", "first_name", "last_name", "cellphone", "email", "wallet"]
+        read_only_fields = ["nickname", "first_name", "last_name", "cellphone", "email"]
+
+    def update(self, instance: User, validated_data: dict):
+        instance.wallet += validated_data["wallet"]
+
+        setattr(instance, "wallet", instance.wallet)
+
+        instance.save()
+
+        return instance
+
+class UpdateUserWalletWithdrawSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["nickname", "first_name", "last_name", "cellphone", "email", "wallet"]
+        read_only_fields = ["nickname", "first_name", "last_name", "cellphone", "email"]
+
+    def update(self, instance: User, validated_data: dict):
+        instance.wallet -= validated_data["wallet"]
+
+        setattr(instance, "wallet", instance.wallet)
+
+        instance.save()
+
+        return instance
 
 class UserLoginSerializer(serializers.Serializer):
     token = serializers.CharField(read_only=True)
@@ -77,4 +109,24 @@ class IsActiveUserSerializer(serializers.ModelSerializer):
             "cellphone",
             "email",
             "password",
+            "wallet",
+            "is_active"
         ]
+
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def update(self, instance: User, validated_data: dict):
+       
+        validated_data["wallet"] += instance.wallet
+
+        for key, value in validated_data.items():
+            if key == "password":
+                instance.set_password(value)
+            else:
+                setattr(instance, key, value)
+
+        instance.save()
+
+        return instance
