@@ -8,7 +8,8 @@ class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = "__all__"
-    
+        depth = 1
+        
     game_api_id = serializers.IntegerField()
     name = serializers.CharField(max_length=255)
    
