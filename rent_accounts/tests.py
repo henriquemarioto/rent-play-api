@@ -130,7 +130,15 @@ class RentAccountModelTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)       
         
        
-        # new_rent_account = self.client.post("/api/rent_accounts/", data=self.client)
+    def test_create_rents_history(self):
+        self.client.force_authenticate(user=self.tester2)
+        rents_days = {
+            "rented_days": "7"
+        }
+        
 
-  
+        response = self.client.patch("/rent_accounts/<pk>/rent/", data=rents_days, format='json')       
+        
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  
    
