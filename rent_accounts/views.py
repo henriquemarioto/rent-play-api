@@ -43,14 +43,6 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         if len(self.request.data["games"]) < 1:
             raise ForbiddenNoGames
 
-        for game in self.request.data["games"]:
-            for game_platform in game["platforms"]:   
-                platform_exists = Platform.objects.filter(pk=game_platform)
-
-                if not platform_exists:
-                    raise PlatformDoesnotExist
-        
-        
         if rent_account:
             raise EmailAlreadyExistInThisPlatform
         serializer.save(owner=self.request.user, platform=platform)
