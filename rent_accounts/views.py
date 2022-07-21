@@ -1,5 +1,6 @@
 import datetime
 from decimal import Decimal
+import re
 
 from django.shortcuts import get_object_or_404
 from platforms.models import Platform
@@ -56,7 +57,7 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
         serializer.save(owner=self.request.user, platform=platform)
 
 
-class ListRentAccountUserbyIdView(generics.ListAPIView):
+class ListRentAccountByUserIdView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -84,7 +85,7 @@ class ListRentAccountOwnerView(generics.ListAPIView):
         return rent_accounts
 
 
-class ListRentAccountUserbyRenterView(generics.ListAPIView):
+class ListRentAccountByRenterView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -116,7 +117,7 @@ class RetrieveUpdateDestroyRentAccountView(
 
     def retrieve(self, request, *args, **kwargs):
         user = self.request.user
-        rent_account = get_object_or_404(RentAccount, pk=self.kwargs["pk"])
+        rent_account = RentAccount.objects.get(pk=self.kwargs["pk"])
         
         if rent_account.owner.id == user.id or (rent_account.renter and rent_account.renter.id == user.id):
             serializer = RetriveRentAccountOwnerOrRenterSerializer(rent_account)
