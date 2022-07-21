@@ -15,3 +15,8 @@ class ForbiddenNoGames(APIException):
     status_code = status.HTTP_403_FORBIDDEN
     default_detail = "It is not allowed to register an account without games!"
     default_code = "games_exists"
+
+class PlatformIsRequired(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "Platforms must not be empty!"
+    default_code = "platforms_empty" 

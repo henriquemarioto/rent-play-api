@@ -3,7 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.permissions import SuperUserPermissions
 
-from .exceptions import GameAlreadyExistsInDataBase
+from .exceptions import GameAlreadyExistsInDataBase, PlatformIsRequired
 from .mixins import SerializerByMethodMixin
 from .models import Game
 from .serializers import GameSerializer
@@ -18,15 +18,15 @@ class GameViews(SerializerByMethodMixin, generics.ListCreateAPIView):
         game_api_id_data = Game.objects.filter(
             game_api_id=self.request.data["game_api_id"]
         )
+        game_name_data = Game.objects.filter(name=self.request.data["name"])
 
-        game_name_data = Game.objects.filter(
-            name=self.request.data["name"]
-        )
+        if not self.request.data.get("platforms"):
+            raise PlatformIsRequired
 
         if game_api_id_data or game_name_data:
             raise GameAlreadyExistsInDataBase
-        
-        serializer.save()
+
+        serializer.save(platforms=self.request.data.get("platforms"))
 
     def get_queryset(self):
         return Game.objects.all().order_by("-release_date")
