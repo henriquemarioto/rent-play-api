@@ -25,7 +25,7 @@ class AddGameSerializer(serializers.ModelSerializer):
 
 class CreateRentAccountSerializer(serializers.ModelSerializer):
     games = AddGameSerializer(many=True)
-    owner =  UserSerializer(read_only=True)
+    owner = UserSerializer(read_only=True)
     platform = PlatformSerializer(read_only=True)
 
     class Meta:
@@ -46,22 +46,22 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
         depth = 1
 
     def create(self, validated_data: dict):
-        
+
         games = validated_data.pop("games")
         rent_account = RentAccount.objects.create(**validated_data)
 
         for item in games:
             game_exists = Game.objects.filter(game_api_id=item["game_api_id"])
-            
+
             if len(game_exists) == 0:
                 item = dict(item)
-                
+
                 platforms = item.pop("platforms")
                 game = Game.objects.create(**item)
-                
+
                 for platform in platforms:
                     game.platforms.add(platform)
-                
+
                 rent_account.games.add(game)
             else:
 
@@ -76,6 +76,7 @@ class CreateRentAccountSerializer(serializers.ModelSerializer):
 
         return instance
 
+
 class ListAndRetriveRentAccountVisitorSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     renter = UserSerializer(read_only=True)
@@ -84,6 +85,7 @@ class ListAndRetriveRentAccountVisitorSerializer(serializers.ModelSerializer):
         model = RentAccount
         exclude = ["login", "password"]
         depth = 2
+
 
 class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
@@ -94,15 +96,15 @@ class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
         exclude = ["password"]
         depth = 1
 
+
 class RetriveRentAccountOwnerOrRenterSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     renter = UserSerializer(read_only=True)
     games = GameSerializer(many=True)
-    
+
     class Meta:
         model = RentAccount
         fields = "__all__"
-        
 
 
 class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):
@@ -119,6 +121,7 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
         fields = ["games"]
 
     def update(self, instance, validated_data):
+        print("AQUIIIIIIIIII", validated_data)
         for item in validated_data["games"]:
             item.pop("platforms")
 
@@ -133,7 +136,11 @@ class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
 class RemoveGamesRentAccountByIdSerializer(serializers.ModelSerializer):
     games = GameSerializer(read_only=True, many=True)
     game_ids = serializers.PrimaryKeyRelatedField(
-        queryset=Game.objects.all(), many=True, source="games", write_only=True, required=True
+        queryset=Game.objects.all(),
+        many=True,
+        source="games",
+        write_only=True,
+        required=True,
     )
 
     class Meta:
