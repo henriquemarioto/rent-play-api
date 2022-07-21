@@ -3,6 +3,7 @@ from decimal import Decimal
 import re
 
 from django.shortcuts import get_object_or_404
+from games.exceptions import PlatformIsRequired
 from platforms.models import Platform
 from rent_play.permissions import OwnerAndAdminPermissions, RenterAndOwnerPermissions
 from rents_history.models import RentHistory
@@ -23,6 +24,7 @@ from .exceptions import (
 )
 from .models import RentAccount
 from .serializers import (
+    AddGameSerializer,
     AddGamesRentAccountByIdSerializer,
     CreateRentAccountSerializer,
     ListAndRetriveRentAccountSerializer,
@@ -55,7 +57,6 @@ class ListCreateRentAccountView(SerializerByMethodMixin, generics.ListCreateAPIV
             raise EmailAlreadyExistInThisPlatform
             
         serializer.save(owner=self.request.user, platform=platform)
-
 
 class ListRentAccountByUserIdView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
@@ -100,6 +101,19 @@ class ListRentAccountByRenterView(generics.ListAPIView):
             rent_account.login = rent_account_login_censorship(rent_account)
 
         return rent_accounts
+
+class ListRentAccountBySearchView(generics.ListAPIView):
+    queryset = RentAccount.objects.all()
+    serializer_class = ListAndRetriveRentAccountVisitorSerializer
+
+    def get_queryset(self):
+        game_id = self.request.GET.get("game_id")
+
+        if game_id:
+            queryset = RentAccount.objects.filter(games__id=game_id)
+            return queryset
+
+        return RentAccount.objects.all()
 
 
 class RetrieveUpdateDestroyRentAccountView(
