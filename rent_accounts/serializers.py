@@ -113,24 +113,41 @@ class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):
         exclude = ["owner", "platform", "renter", "games"]
 
 
+class AddGameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = "__all__"
+        
+    game_api_id = serializers.IntegerField()
+    name = serializers.CharField(max_length=255)
+
 class AddGamesRentAccountByIdSerializer(serializers.ModelSerializer):
-    games = GameSerializer(many=True)
+    games = AddGameSerializer(many=True)
 
     class Meta:
         model = RentAccount
         fields = ["games"]
 
     def update(self, instance, validated_data):
-        print("AQUIIIIIIIIII", validated_data)
-        for item in validated_data["games"]:
-            item.pop("platforms")
 
-            game, _ = Game.objects.get_or_create(**item)
-            game.platforms.add(instance.platform.id)
+        for item in validated_data.get("games"):
+            game_exists = Game.objects.filter(game_api_id=item["game_api_id"])
 
-            instance.games.add(game)
+            if len(game_exists) == 0:
+                item = dict(item)
 
-        return instance
+                platforms = item.pop("platforms")
+                game = Game.objects.create(**item)
+
+                for platform in platforms:
+                    game.platforms.add(platform)
+
+                instance.games.add(game)
+            else:
+
+                instance.games.add(game_exists[0])
+
+        return instance 
 
 
 class RemoveGamesRentAccountByIdSerializer(serializers.ModelSerializer):
