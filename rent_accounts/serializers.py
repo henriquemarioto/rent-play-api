@@ -82,7 +82,7 @@ class ListAndRetriveRentAccountVisitorSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentAccount
         exclude = ["login", "password"]
-        depth = 1
+        depth = 2
 
 class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
@@ -96,11 +96,12 @@ class ListAndRetriveRentAccountSerializer(serializers.ModelSerializer):
 class RetriveRentAccountOwnerOrRenterSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     renter = UserSerializer(read_only=True)
-
+    games = GameSerializer(many=True)
+    
     class Meta:
         model = RentAccount
         fields = "__all__"
-        depth = 1
+        
 
 
 class UpdateDeleteRentAccountSerializer(serializers.ModelSerializer):

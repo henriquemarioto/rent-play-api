@@ -68,7 +68,7 @@ class UpdateUserWalletSerializer(serializers.ModelSerializer):
         read_only_fields = ["nickname", "first_name", "last_name", "cellphone", "email"]
 
     def update(self, instance: User, validated_data: dict):
-        instance.wallet += validated_data["wallet"]
+        instance.wallet += abs(validated_data["wallet"])
 
         setattr(instance, "wallet", instance.wallet)
 
@@ -118,8 +118,8 @@ class IsActiveUserSerializer(serializers.ModelSerializer):
         }
 
     def update(self, instance: User, validated_data: dict):
-       
-        validated_data["wallet"] += instance.wallet
+        if validated_data.get("wallet"):
+            validated_data["wallet"] += instance.wallet
 
         for key, value in validated_data.items():
             if key == "password":
